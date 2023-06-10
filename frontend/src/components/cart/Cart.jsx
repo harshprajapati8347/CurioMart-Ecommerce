@@ -117,7 +117,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
       <div className="w-full flex items-center">
         <div>
           <div
-            className={`bg-[#e44343] border border-[#e4434373] rounded-full w-[25px] h-[25px] ${styles.noramlFlex} justify-center cursor-pointer`}
+            className={`bg-[#00ff37b2] border border-[#e4434373] rounded-full w-[25px] h-[25px] ${styles.noramlFlex} justify-center cursor-pointer`}
             onClick={() => increment(data)}
           >
             <HiPlus size={18} color="#fff" />
@@ -128,6 +128,12 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             onClick={() => decrement(data)}
           >
             <HiOutlineMinus size={16} color="#7d879c" />
+          </div>
+          <div
+            className="bg-[#ca05054f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer mt-1"
+            onClick={() => removeFromCartHandler(data)}
+          >
+            <RxCross1 size={18} color="#fff" />
           </div>
         </div>
         <img
@@ -144,10 +150,6 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             IND₹{totalPrice}
           </h4>
         </div>
-        <RxCross1
-          className="cursor-pointer"
-          onClick={() => removeFromCartHandler(data)}
-        />
       </div>
     </div>
   );

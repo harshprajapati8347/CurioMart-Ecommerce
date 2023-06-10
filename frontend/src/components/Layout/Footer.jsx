@@ -45,24 +45,30 @@ const Footer = () => {
           <p>The home and elements needeed to create beatiful products.</p>
           <div className="flex items-center mt-[15px]">
             <AiFillFacebook size={25} className="cursor-pointer" />
-            <AiOutlineTwitter
-              size={25}
-              style={{ marginLeft: "15px", cursor: "pointer" }}
-            />
-            <AiFillInstagram
-              size={25}
-              style={{ marginLeft: "15px", cursor: "pointer" }}
-            />
-            <AiFillYoutube
-              size={25}
-              style={{ marginLeft: "15px", cursor: "pointer" }}
-            />
+            <Link to="https://twitter.com/Harsh62300719">
+              <AiOutlineTwitter
+                size={25}
+                style={{ marginLeft: "15px", cursor: "pointer" }}
+              />
+            </Link>
+            <Link to="https://www.instagram.com/harsh_pr26/">
+              <AiFillInstagram
+                size={25}
+                style={{ marginLeft: "15px", cursor: "pointer" }}
+              />
+            </Link>
+            <Link to="https://www.youtube.com/channel/UCGrekJRFqeI7SP4o06CuxPg">
+              <AiFillYoutube
+                size={25}
+                style={{ marginLeft: "15px", cursor: "pointer" }}
+              />
+            </Link>
           </div>
         </ul>
 
         <ul className="text-center sm:text-start">
           <h1 className="mb-1 font-semibold">Company</h1>
-          {footerProductLinks.map((link,index) => (
+          {footerProductLinks.map((link, index) => (
             <li key={index}>
               <Link
                 className="text-gray-400 hover:text-teal-400 duration-300
@@ -77,7 +83,7 @@ const Footer = () => {
 
         <ul className="text-center sm:text-start">
           <h1 className="mb-1 font-semibold">Shop</h1>
-          {footercompanyLinks.map((link,index) => (
+          {footercompanyLinks.map((link, index) => (
             <li key={index}>
               <Link
                 className="text-gray-400 hover:text-teal-400 duration-300
@@ -92,7 +98,7 @@ const Footer = () => {
 
         <ul className="text-center sm:text-start">
           <h1 className="mb-1 font-semibold">Support</h1>
-          {footerSupportLinks.map((link,index) => (
+          {footerSupportLinks.map((link, index) => (
             <li key={index}>
               <Link
                 className="text-gray-400 hover:text-teal-400 duration-300
@@ -110,7 +116,7 @@ const Footer = () => {
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10
          text-center pt-2 text-gray-400 text-sm pb-8"
       >
-        <span>© 2020 Becodemy. All rights reserved.</span>
+        <span>© 2023 CurioMart by Harsh. All rights reserved.</span>
         <span>Terms · Privacy Policy</span>
         <div className="sm:block flex items-center justify-center w-full">
           <img
