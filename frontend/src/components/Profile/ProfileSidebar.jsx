@@ -17,10 +17,12 @@ import { useSelector } from "react-redux";
 
 const ProfileSidebar = ({ setActive, active }) => {
   const navigate = useNavigate();
- const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const logoutHandler = () => {
     axios
-      .get(`${server}/user/logout`, { withCredentials: true })
+      .get(`${process.env.REACT_APP_SERVER_URL}/user/logout`, {
+        withCredentials: true,
+      })
       .then((res) => {
         toast.success(res.data.message);
         window.location.reload(true);

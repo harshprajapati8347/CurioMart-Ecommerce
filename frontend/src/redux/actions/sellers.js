@@ -8,9 +8,12 @@ export const getAllSellers = () => async (dispatch) => {
       type: "getAllSellersRequest",
     });
 
-    const { data } = await axios.get(`${server}/shop/admin-all-sellers`, {
-      withCredentials: true,
-    });
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/shop/admin-all-sellers`,
+      {
+        withCredentials: true,
+      }
+    );
 
     dispatch({
       type: "getAllSellersSuccess",
@@ -19,7 +22,7 @@ export const getAllSellers = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "getAllSellerFailed",
-    //   payload: error.response.data.message,
+      //   payload: error.response.data.message,
     });
   }
 };

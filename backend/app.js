@@ -8,7 +8,7 @@ const path = require("path");
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://curiomart-client-harsh.onrender.com",
     credentials: true,
   })
 );
