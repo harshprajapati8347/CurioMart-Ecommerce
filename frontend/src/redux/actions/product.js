@@ -11,7 +11,7 @@ export const createProduct = (newForm) => async (dispatch) => {
     const config = { headers: { "Content-Type": "multipart/form-data" } };
 
     const { data } = await axios.post(
-      `${server}/product/create-product`,
+      `${process.env.REACT_APP_SERVER_URL}/product/create-product`,
       newForm,
       config
     );
@@ -35,7 +35,7 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${server}/product/get-all-products-shop/${id}`
+      `${process.env.REACT_APP_SERVER_URL}/product/get-all-products-shop/${id}`
     );
     dispatch({
       type: "getAllProductsShopSuccess",
@@ -57,7 +57,7 @@ export const deleteProduct = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${server}/product/delete-shop-product/${id}`,
+      `${process.env.REACT_APP_SERVER_URL}/product/delete-shop-product/${id}`,
       {
         withCredentials: true,
       }
@@ -82,7 +82,9 @@ export const getAllProducts = () => async (dispatch) => {
       type: "getAllProductsRequest",
     });
 
-    const { data } = await axios.get(`${server}/product/get-all-products`);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/product/get-all-products`
+    );
     dispatch({
       type: "getAllProductsSuccess",
       payload: data.products,

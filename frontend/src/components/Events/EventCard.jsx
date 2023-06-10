@@ -24,7 +24,7 @@ const EventCard = ({ active, data }) => {
         toast.success("Item added to cart successfully!");
       }
     }
-  }
+  };
   return (
     <div
       className={`w-full block bg-white rounded-lg ${
@@ -32,7 +32,10 @@ const EventCard = ({ active, data }) => {
       } lg:flex p-2`}
     >
       <div className="w-full lg:-w[50%] m-auto">
-        <img src={`${backend_url}${data.images[0]}`} alt="" />
+        <img
+          src={`${process.env.REACT_APP_BACKEND_URL}${data.images[0]}`}
+          alt=""
+        />
       </div>
       <div className="w-full lg:[w-50%] flex flex-col justify-center">
         <h2 className={`${styles.productTitle}`}>{data.name}</h2>

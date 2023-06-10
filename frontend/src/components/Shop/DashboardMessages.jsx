@@ -46,7 +46,7 @@ const DashboardMessages = () => {
     const getConversation = async () => {
       try {
         const resonse = await axios.get(
-          `${server}/conversation/get-all-conversation-seller/${seller?._id}`,
+          `${process.env.REACT_APP_SERVER_URL}/conversation/get-all-conversation-seller/${seller?._id}`,
           {
             withCredentials: true,
           }
@@ -82,7 +82,7 @@ const DashboardMessages = () => {
     const getMessage = async () => {
       try {
         const response = await axios.get(
-          `${server}/message/get-all-messages/${currentChat?._id}`
+          `${process.env.REACT_APP_SERVER_URL}/message/get-all-messages/${currentChat?._id}`
         );
         setMessages(response.data.messages);
       } catch (error) {
@@ -115,7 +115,10 @@ const DashboardMessages = () => {
     try {
       if (newMessage !== "") {
         await axios
-          .post(`${server}/message/create-new-message`, message)
+          .post(
+            `${process.env.REACT_APP_SERVER_URL}/message/create-new-message`,
+            message
+          )
           .then((res) => {
             setMessages([...messages, res.data.message]);
             updateLastMessage();
@@ -136,10 +139,13 @@ const DashboardMessages = () => {
     });
 
     await axios
-      .put(`${server}/conversation/update-last-message/${currentChat._id}`, {
-        lastMessage: newMessage,
-        lastMessageId: seller._id,
-      })
+      .put(
+        `${process.env.REACT_APP_SERVER_URL}/conversation/update-last-message/${currentChat._id}`,
+        {
+          lastMessage: newMessage,
+          lastMessageId: seller._id,
+        }
+      )
       .then((res) => {
         console.log(res.data.conversation);
         setNewMessage("");
@@ -175,11 +181,15 @@ const DashboardMessages = () => {
 
     try {
       await axios
-        .post(`${server}/message/create-new-message`, formData,{
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(
+          `${process.env.REACT_APP_SERVER_URL}/message/create-new-message`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((res) => {
           setImages();
           setMessages([...messages, res.data.message]);
@@ -192,7 +202,7 @@ const DashboardMessages = () => {
 
   const updateLastMessageForImage = async () => {
     await axios.put(
-      `${server}/conversation/update-last-message/${currentChat._id}`,
+      `${process.env.REACT_APP_SERVER_URL}/conversation/update-last-message/${currentChat._id}`,
       {
         lastMessage: "Photo",
         lastMessageId: seller._id,
@@ -273,7 +283,9 @@ const MessageList = ({
 
     const getUser = async () => {
       try {
-        const res = await axios.get(`${server}/user/user-info/${userId}`);
+        const res = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/user/user-info/${userId}`
+        );
         setUser(res.data.user);
       } catch (error) {
         console.log(error);
@@ -297,7 +309,7 @@ const MessageList = ({
     >
       <div className="relative">
         <img
-          src={`${backend_url}${user?.avatar}`}
+          src={`${process.env.REACT_APP_BACKEND_URL}${user?.avatar}`}
           alt=""
           className="w-[50px] h-[50px] rounded-full"
         />
@@ -338,7 +350,7 @@ const SellerInbox = ({
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={`${backend_url}${userData?.avatar}`}
+            src={`${process.env.REACT_APP_BACKEND_URL}${userData?.avatar}`}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
@@ -358,48 +370,44 @@ const SellerInbox = ({
       <div className="px-3 h-[65vh] py-3 overflow-y-scroll">
         {messages &&
           messages.map((item, index) => {
-             return (
+            return (
               <div
-              className={`flex w-full my-2 ${
-                item.sender === sellerId ? "justify-end" : "justify-start"
-              }`}
-              ref={scrollRef}
-            >
-              {item.sender !== sellerId && (
-                <img
-                  src={`${backend_url}${userData?.avatar}`}
-                  className="w-[40px] h-[40px] rounded-full mr-3"
-                  alt=""
-                />
-              )}
-              {
-                item.images && (
+                className={`flex w-full my-2 ${
+                  item.sender === sellerId ? "justify-end" : "justify-start"
+                }`}
+                ref={scrollRef}
+              >
+                {item.sender !== sellerId && (
                   <img
-                     src={`${backend_url}${item.images}`}
-                     className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
+                    src={`${process.env.REACT_APP_BACKEND_URL}${userData?.avatar}`}
+                    className="w-[40px] h-[40px] rounded-full mr-3"
+                    alt=""
                   />
-                )
-              }
-             {
-              item.text !== "" && (
-                <div>
-                <div
-                  className={`w-max p-2 rounded ${
-                    item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
-                  } text-[#fff] h-min`}
-                >
-                  <p>{item.text}</p>
-                </div>
+                )}
+                {item.images && (
+                  <img
+                    src={`${process.env.REACT_APP_BACKEND_URL}${item.images}`}
+                    className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
+                  />
+                )}
+                {item.text !== "" && (
+                  <div>
+                    <div
+                      className={`w-max p-2 rounded ${
+                        item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
+                      } text-[#fff] h-min`}
+                    >
+                      <p>{item.text}</p>
+                    </div>
 
-                <p className="text-[12px] text-[#000000d3] pt-1">
-                  {format(item.createdAt)}
-                </p>
+                    <p className="text-[12px] text-[#000000d3] pt-1">
+                      {format(item.createdAt)}
+                    </p>
+                  </div>
+                )}
               </div>
-              )
-             }
-            </div>
-             )
-      })}
+            );
+          })}
       </div>
 
       {/* send message input */}

@@ -17,7 +17,7 @@ const ShopLogin = () => {
 
     await axios
       .post(
-        `${server}/shop/login-shop`,
+        `${process.env.REACT_APP_SERVER_URL}/shop/login-shop`,
         {
           email,
           password,
@@ -27,7 +27,7 @@ const ShopLogin = () => {
       .then((res) => {
         toast.success("Login Success!");
         navigate("/dashboard");
-        window.location.reload(true); 
+        window.location.reload(true);
       })
       .catch((err) => {
         toast.error(err.response.data.message);

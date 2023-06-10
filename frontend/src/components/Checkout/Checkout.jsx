@@ -72,32 +72,36 @@ const Checkout = () => {
     e.preventDefault();
     const name = couponCode;
 
-    await axios.get(`${server}/coupon/get-coupon-value/${name}`).then((res) => {
-      const shopId = res.data.couponCode?.shopId;
-      const couponCodeValue = res.data.couponCode?.value;
-      if (res.data.couponCode !== null) {
-        const isCouponValid =
-          cart && cart.filter((item) => item.shopId === shopId);
+    await axios
+      .get(
+        `${process.env.REACT_APP_SERVER_URL}/coupon/get-coupon-value/${name}`
+      )
+      .then((res) => {
+        const shopId = res.data.couponCode?.shopId;
+        const couponCodeValue = res.data.couponCode?.value;
+        if (res.data.couponCode !== null) {
+          const isCouponValid =
+            cart && cart.filter((item) => item.shopId === shopId);
 
-        if (isCouponValid.length === 0) {
-          toast.error("Coupon code is not valid for this shop");
-          setCouponCode("");
-        } else {
-          const eligiblePrice = isCouponValid.reduce(
-            (acc, item) => acc + item.qty * item.discountPrice,
-            0
-          );
-          const discountPrice = (eligiblePrice * couponCodeValue) / 100;
-          setDiscountPrice(discountPrice);
-          setCouponCodeData(res.data.couponCode);
+          if (isCouponValid.length === 0) {
+            toast.error("Coupon code is not valid for this shop");
+            setCouponCode("");
+          } else {
+            const eligiblePrice = isCouponValid.reduce(
+              (acc, item) => acc + item.qty * item.discountPrice,
+              0
+            );
+            const discountPrice = (eligiblePrice * couponCodeValue) / 100;
+            setDiscountPrice(discountPrice);
+            setCouponCodeData(res.data.couponCode);
+            setCouponCode("");
+          }
+        }
+        if (res.data.couponCode === null) {
+          toast.error("Coupon code doesn't exists!");
           setCouponCode("");
         }
-      }
-      if (res.data.couponCode === null) {
-        toast.error("Coupon code doesn't exists!");
-        setCouponCode("");
-      }
-    });
+      });
   };
 
   const discountPercentenge = couponCodeData ? discountPrice : "";
