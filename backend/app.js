@@ -5,17 +5,9 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-
-app.use(
-  cors({
-    origin: "https://curiomart-client-harsh.onrender.com",
-    credentials: true,
-  })
-);
-
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", express.static(path.join(__dirname,"./uploads")));
+app.use("/", express.static(path.join(__dirname, "./uploads")));
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });
@@ -28,6 +20,16 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     path: "config/.env",
   });
 }
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    // origin: "http://localhost:3000",
+    // origin: "https://curiomart-client-harsh.onrender.com",
+    credentials: true,
+  })
+);
+
 
 // import routes
 const user = require("./controller/user");
