@@ -44,8 +44,7 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
-
+    const activationUrl = `${process.env.FRONTEND_URL}/seller/activation?activation_token=${activationToken}`;
     try {
       await sendMail({
         email: seller.email,
@@ -171,7 +170,7 @@ router.get(
   "/logout",
   catchAsyncErrors(async (req, res, next) => {
     try {
-        res.cookie("seller_token", null, {
+      res.cookie("seller_token", null, {
         expires: new Date(Date.now()),
         httpOnly: true,
         sameSite: "none",

@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "engines": {
-    "node": "18.10.0"
+    "node": ">=18.10.0"
   },
+  "proxy": "http://localhost:3000",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",

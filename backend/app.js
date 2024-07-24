@@ -8,14 +8,18 @@ const path = require("path");
 
 app.use(
   cors({
-    origin: "https://curiomart-client-harsh.onrender.com",
+    origin: [
+      process.env.FRONTEND_URL,
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+    ],
     credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", express.static(path.join(__dirname,"./uploads")));
+app.use("/", express.static(path.join(__dirname, "./uploads")));
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });

@@ -99,11 +99,11 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
         <Route
-          path="/activation/:activation_token"
+          path="/activation"
           element={<ActivationPage />}
         />
         <Route
-          path="/seller/activation/:activation_token"
+          path="/seller/activation"
           element={<SellerActivationPage />}
         />
         <Route path="/products" element={<ProductsPage />} />

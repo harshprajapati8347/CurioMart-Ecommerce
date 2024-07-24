@@ -1,30 +1,51 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { server } from "../server";
+import Cookies from "universal-cookie";
+import { toast } from "react-toastify";
 
 const ActivationPage = () => {
-  const { activation_token } = useParams();
-  const [error, setError] = useState(false);
+  const [searchParams] = useSearchParams();
+  const activation_token = searchParams.get("activation_token");
+  const [response, setResponse] = useState("");
+  const cookies = new Cookies();
 
   useEffect(() => {
     if (activation_token) {
+      console.log("activation_token", activation_token);
       const sendRequest = async () => {
         await axios
-          .post(`${process.env.REACT_APP_SERVER_URL}/user/activation`, {
+          .post(`${server}/user/activation`, {
             activation_token,
           })
           .then((res) => {
-            console.log(res);
+            console.log("res-activation-response", res);
+            setResponse(res.data);
+            cookies.set("token", res.data.token);
           })
           .catch((err) => {
-            setError(true);
+            console.log(
+              err,
+              err.response,
+              err.response.data,
+              "error activation"
+            );
           });
       };
       sendRequest();
     }
-  }, []);
+  }, [activation_token, cookies]);
+
+  useEffect(() => {
+    if (response) {
+      setTimeout(() => {
+        toast.success("Your account has been created suceessfully!");
+        window.location.href = "/login";
+      }, 3000);
+    }
+  }, [response]);
 
   return (
     <div
@@ -36,10 +57,12 @@ const ActivationPage = () => {
         alignItems: "center",
       }}
     >
-      {error ? (
-        <p>Your token is expired!</p>
+      {response ? (
+        <div>
+          <p>Your account has been created suceessfully!</p>
+        </div>
       ) : (
-        <p>Your account has been created suceessfully!</p>
+        <p>Your token is expired!</p>
       )}
     </div>
   );
