@@ -59,7 +59,7 @@ const ShopInfo = ({ isOwner }) => {
           <div className="w-full py-5">
             <div className="w-full flex item-center justify-center">
               <img
-                src={`${process.env.REACT_APP_BACKEND_URL}${data.avatar}`}
+                src={`${process.env.REACT_APP_BACKEND_URL}/${data.avatar}`}
                 alt=""
                 className="w-[150px] h-[150px] object-cover rounded-full"
               />

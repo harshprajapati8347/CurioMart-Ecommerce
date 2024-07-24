@@ -33,7 +33,7 @@ const EventCard = ({ active, data }) => {
     >
       <div className="w-full lg:-w[50%] m-auto">
         <img
-          src={`${process.env.REACT_APP_BACKEND_URL}${data.images[0]}`}
+          src={`${process.env.REACT_APP_BACKEND_URL}/${data.images[0]}`}
           alt=""
         />
       </div>
