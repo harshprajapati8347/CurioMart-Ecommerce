@@ -59,8 +59,10 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-                alt=""
+                src="https://res.cloudinary.com/dxvcv8tis/image/upload/v1726998556/CurioMart/yef3cywqijgqgr58ity4.png"
+                alt="Logo"
+                height={100}
+                width={100}
               />
             </Link>
           </div>
@@ -218,7 +220,7 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src="https://res.cloudinary.com/dxvcv8tis/image/upload/v1726998556/CurioMart/yef3cywqijgqgr58ity4.png"
                 alt=""
                 className="mt-3 cursor-pointer"
               />
