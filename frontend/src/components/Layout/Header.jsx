@@ -17,6 +17,7 @@ import { backend_url } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
+import logo from "../../Assests/images/logo.png";
 
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -58,12 +59,7 @@ const Header = ({ activeHeading }) => {
         <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">
           <div>
             <Link to="/">
-              <img
-                src="https://res.cloudinary.com/dxvcv8tis/image/upload/v1726998556/CurioMart/yef3cywqijgqgr58ity4.png"
-                alt="Logo"
-                height={100}
-                width={100}
-              />
+              <img src={logo} alt="Logo" height={100} width={100} />
             </Link>
           </div>
           {/* search box */}
@@ -220,9 +216,11 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                src="https://res.cloudinary.com/dxvcv8tis/image/upload/v1726998556/CurioMart/yef3cywqijgqgr58ity4.png"
-                alt=""
+                src={logo}
+                alt="Logo"
                 className="mt-3 cursor-pointer"
+                height={50}
+                width={50}
               />
             </Link>
           </div>
