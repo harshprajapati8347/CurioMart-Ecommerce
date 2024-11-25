@@ -98,14 +98,8 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
-        <Route
-          path="/activation"
-          element={<ActivationPage />}
-        />
-        <Route
-          path="/seller/activation"
-          element={<SellerActivationPage />}
-        />
+        <Route path="/activation" element={<ActivationPage />} />
+        <Route path="/seller/activation" element={<SellerActivationPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
@@ -238,7 +232,7 @@ const App = () => {
           }
         />
         <Route
-          path="/dashboard-coupouns"
+          path="/dashboard-coupons"
           element={
             <SellerProtectedRoute>
               <ShopAllCoupouns />
