@@ -9,7 +9,7 @@ export const getAllOrdersOfUser = (userId) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/order/get-all-orders/${userId}`
+      `${import.meta.env.VITE_APP_SERVER_URL}/order/get-all-orders/${userId}`
     );
 
     dispatch({
@@ -32,7 +32,9 @@ export const getAllOrdersOfShop = (shopId) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/order/get-seller-all-orders/${shopId}`
+      `${
+        import.meta.env.VITE_APP_SERVER_URL
+      }/order/get-seller-all-orders/${shopId}`
     );
 
     dispatch({
@@ -55,7 +57,7 @@ export const getAllOrdersOfAdmin = () => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/order/admin-all-orders`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/order/admin-all-orders`,
       {
         withCredentials: true,
       }

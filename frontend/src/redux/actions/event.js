@@ -11,7 +11,7 @@ export const createevent = (newForm) => async (dispatch) => {
     const config = { headers: { "Content-Type": "multipart/form-data" } };
 
     const { data } = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/event/create-event`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/event/create-event`,
       newForm,
       config
     );
@@ -35,7 +35,7 @@ export const getAllEventsShop = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/event/get-all-events/${id}`
+      `${import.meta.env.VITE_APP_SERVER_URL}/event/get-all-events/${id}`
     );
     dispatch({
       type: "getAlleventsShopSuccess",
@@ -57,7 +57,7 @@ export const deleteEvent = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_SERVER_URL}/event/delete-shop-event/${id}`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/event/delete-shop-event/${id}`,
       {
         withCredentials: true,
       }
@@ -83,7 +83,7 @@ export const getAllEvents = () => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/event/get-all-events`
+      `${import.meta.env.VITE_APP_SERVER_URL}/event/get-all-events`
     );
     dispatch({
       type: "getAlleventsSuccess",

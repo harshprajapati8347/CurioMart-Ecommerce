@@ -83,7 +83,9 @@ const Header = ({ activeHeading }) => {
                       <Link to={`/product/${i._id}`}>
                         <div className="w-full flex items-start-py-3">
                           <img
-                            src={`${process.env.REACT_APP_BACKEND_URL}/${i.images[0]}`}
+                            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                              i.images[0]
+                            }`}
                             alt=""
                             className="w-[40px] h-[40px] mr-[10px]"
                           />
@@ -174,7 +176,9 @@ const Header = ({ activeHeading }) => {
                 {isAuthenticated ? (
                   <Link to="/profile">
                     <img
-                      src={`${process.env.REACT_APP_BACKEND_URL}/${user?.avatar}`}
+                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                        user?.avatar
+                      }`}
                       className="w-[35px] h-[35px] rounded-full"
                       alt=""
                     />
@@ -315,7 +319,9 @@ const Header = ({ activeHeading }) => {
                   <div>
                     <Link to="/profile">
                       <img
-                        src={`${process.env.REACT_APP_BACKEND_URL}/${user.avatar}`}
+                        src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                          user.avatar
+                        }`}
                         alt=""
                         className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88]"
                       />

@@ -31,7 +31,7 @@ const ShopSettings = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/shop/update-shop-avatar`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/update-shop-avatar`,
         formData,
         {
           headers: {
@@ -54,7 +54,7 @@ const ShopSettings = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/shop/update-seller-info`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/update-seller-info`,
         {
           name,
           address,
@@ -82,7 +82,7 @@ const ShopSettings = () => {
               src={
                 avatar
                   ? URL.createObjectURL(avatar)
-                  : `${process.env.REACT_APP_BACKEND_URL}/${seller.avatar}`
+                  : `${import.meta.env.VITE_APP_BACKEND_URL}/${seller.avatar}`
               }
               alt=""
               className="w-[200px] h-[200px] rounded-full cursor-pointer"

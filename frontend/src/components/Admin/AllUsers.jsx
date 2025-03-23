@@ -23,7 +23,7 @@ const AllUsers = () => {
 
   const handleDelete = async (id) => {
     await axios
-      .delete(`${process.env.REACT_APP_SERVER_URL}/user/delete-user/${id}`, {
+      .delete(`${import.meta.env.VITE_APP_SERVER_URL}/user/delete-user/${id}`, {
         withCredentials: true,
       })
       .then((res) => {

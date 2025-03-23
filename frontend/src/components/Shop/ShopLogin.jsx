@@ -17,7 +17,7 @@ const ShopLogin = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_SERVER_URL}/shop/login-shop`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/login-shop`,
         {
           email,
           password,

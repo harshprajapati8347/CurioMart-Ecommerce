@@ -44,7 +44,7 @@ const WithdrawMoney = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/shop/update-payment-methods`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/update-payment-methods`,
         {
           withdrawMethod,
         },
@@ -70,7 +70,7 @@ const WithdrawMoney = () => {
   const deleteHandler = async () => {
     await axios
       .delete(
-        `${process.env.REACT_APP_SERVER_URL}/shop/delete-withdraw-method`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/delete-withdraw-method`,
         {
           withCredentials: true,
         }
@@ -92,7 +92,9 @@ const WithdrawMoney = () => {
       const amount = withdrawAmount;
       await axios
         .post(
-          `${process.env.REACT_APP_SERVER_URL}/withdraw/create-withdraw-request`,
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
+          }/withdraw/create-withdraw-request`,
           { amount },
           { withCredentials: true }
         )

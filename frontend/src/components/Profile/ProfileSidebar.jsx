@@ -20,7 +20,7 @@ const ProfileSidebar = ({ setActive, active }) => {
   const { user } = useSelector((state) => state.user);
   const logoutHandler = () => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_URL}/user/logout`, {
+      .get(`${import.meta.env.VITE_APP_SERVER_URL}/user/logout`, {
         withCredentials: true,
       })
       .then((res) => {

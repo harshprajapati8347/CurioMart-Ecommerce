@@ -54,7 +54,7 @@ const AdminHeader = () => {
             />
           </Link>
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${user?.avatar}`}
+            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
             alt=""
             className="w-[50px] h-[50px] rounded-full object-cover"
           />

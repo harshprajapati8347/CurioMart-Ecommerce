@@ -21,7 +21,7 @@ import {
   OrderDetailsPage,
   TrackOrderPage,
   UserInbox,
-} from "./routes/Routes.js";
+} from "./routes/Routes.jsx";
 import {
   ShopDashboardPage,
   ShopCreateProduct,
@@ -36,7 +36,7 @@ import {
   ShopSettingsPage,
   ShopWithDrawMoneyPage,
   ShopInboxPage,
-} from "./routes/ShopRoutes";
+} from "./routes/ShopRoutes.jsx";
 import {
   AdminDashboardPage,
   AdminDashboardUsers,
@@ -45,15 +45,15 @@ import {
   AdminDashboardProducts,
   AdminDashboardEvents,
   AdminDashboardWithdraw,
-} from "./routes/AdminRoutes";
+} from "./routes/AdminRoutes.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
-import { ShopHomePage } from "./ShopRoutes.js";
-import SellerProtectedRoute from "./routes/SellerProtectedRoute";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import ProtectedAdminRoute from "./routes/ProtectedAdminRoute.jsx";
+import { ShopHomePage } from "./ShopRoutes.jsx";
+import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
 import axios from "axios";
@@ -66,7 +66,7 @@ const App = () => {
 
   async function getStripeApikey() {
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/payment/stripeapikey`
+      `${import.meta.env.VITE_APP_SERVER_URL}/payment/stripeapikey`
     );
     setStripeApiKey(data.stripeApikey);
   }

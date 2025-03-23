@@ -58,12 +58,16 @@ const ProfileContent = ({ active }) => {
     formData.append("image", e.target.files[0]);
 
     await axios
-      .put(`${process.env.REACT_APP_SERVER_URL}/user/update-avatar`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      })
+      .put(
+        `${import.meta.env.VITE_APP_SERVER_URL}/user/update-avatar`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         dispatch(loadUser());
         toast.success("avatar updated successfully!");
@@ -81,7 +85,7 @@ const ProfileContent = ({ active }) => {
           <div className="flex justify-center w-full">
             <div className="relative">
               <img
-                src={`${process.env.REACT_APP_BACKEND_URL}/${user?.avatar}`}
+                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />
@@ -465,7 +469,7 @@ const ChangePassword = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/user/update-user-password`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/user/update-user-password`,
         { oldPassword, newPassword, confirmPassword },
         { withCredentials: true }
       )

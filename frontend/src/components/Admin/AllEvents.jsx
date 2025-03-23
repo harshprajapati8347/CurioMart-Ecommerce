@@ -10,7 +10,7 @@ const AllEvents = () => {
   const [events, setEvents] = useState([]);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_URL}/event/admin-all-events`, {
+      .get(`${import.meta.env.VITE_APP_SERVER_URL}/event/admin-all-events`, {
         withCredentials: true,
       })
       .then((res) => {

@@ -30,7 +30,7 @@ const UserOrderDetails = () => {
   const reviewHandler = async (e) => {
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/product/create-new-review`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/product/create-new-review`,
         {
           user,
           rating,
@@ -54,7 +54,7 @@ const UserOrderDetails = () => {
 
   const refundHandler = async () => {
     await axios
-      .put(`${process.env.REACT_APP_SERVER_URL}/order/order-refund/${id}`, {
+      .put(`${import.meta.env.VITE_APP_SERVER_URL}/order/order-refund/${id}`, {
         status: "Processing refund",
       })
       .then((res) => {
@@ -92,7 +92,9 @@ const UserOrderDetails = () => {
           return (
             <div className="w-full flex items-start mb-5">
               <img
-                src={`${process.env.REACT_APP_BACKEND_URL}/${item.images[0]}`}
+                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                  item.images[0]
+                }`}
                 alt=""
                 className="w-[80x] h-[80px]"
               />
@@ -131,7 +133,9 @@ const UserOrderDetails = () => {
             <br />
             <div className="w-full flex">
               <img
-                src={`${process.env.REACT_APP_BACKEND_URL}/${selectedItem?.images[0]}`}
+                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                  selectedItem?.images[0]
+                }`}
                 alt=""
                 className="w-[80px] h-[80px]"
               />

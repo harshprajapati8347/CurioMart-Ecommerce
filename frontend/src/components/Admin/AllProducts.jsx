@@ -16,9 +16,12 @@ const AllProducts = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_URL}/product/admin-all-products`, {
-        withCredentials: true,
-      })
+      .get(
+        `${import.meta.env.VITE_APP_SERVER_URL}/product/admin-all-products`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         setData(res.data.products);
       });

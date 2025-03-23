@@ -23,9 +23,12 @@ const AllSellers = () => {
 
   const handleDelete = async (id) => {
     await axios
-      .delete(`${process.env.REACT_APP_SERVER_URL}/shop/delete-seller/${id}`, {
-        withCredentials: true,
-      })
+      .delete(
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/delete-seller/${id}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         toast.success(res.data.message);
       });

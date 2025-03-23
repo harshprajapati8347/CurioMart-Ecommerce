@@ -8,7 +8,7 @@ export const loadUser = () => async (dispatch) => {
       type: "LoadUserRequest",
     });
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/user/getuser`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/user/getuser`,
       {
         withCredentials: true,
       }
@@ -32,7 +32,7 @@ export const loadSeller = () => async (dispatch) => {
       type: "LoadSellerRequest",
     });
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/shop/getSeller`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/shop/getSeller`,
       {
         withCredentials: true,
       }
@@ -58,7 +58,7 @@ export const updateUserInformation =
       });
 
       const { data } = await axios.put(
-        `${process.env.REACT_APP_SERVER_URL}/user/update-user-info`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/user/update-user-info`,
         {
           email,
           password,
@@ -95,7 +95,7 @@ export const updatUserAddress =
       });
 
       const { data } = await axios.put(
-        `${process.env.REACT_APP_SERVER_URL}/user/update-user-addresses`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/user/update-user-addresses`,
         {
           country,
           city,
@@ -130,7 +130,7 @@ export const deleteUserAddress = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_SERVER_URL}/user/delete-user-address/${id}`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/user/delete-user-address/${id}`,
       { withCredentials: true }
     );
 
@@ -157,7 +157,7 @@ export const getAllUsers = () => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/user/admin-all-users`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/user/admin-all-users`,
       {
         withCredentials: true,
       }

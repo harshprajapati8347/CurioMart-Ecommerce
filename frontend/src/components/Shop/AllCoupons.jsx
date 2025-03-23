@@ -28,7 +28,9 @@ const AllCoupons = () => {
     setIsLoading(true);
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_URL}/coupon/get-coupon/${seller._id}`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/get-coupon/${
+          seller._id
+        }`,
         {
           withCredentials: true,
         }
@@ -45,7 +47,7 @@ const AllCoupons = () => {
   const handleDelete = async (id) => {
     axios
       .delete(
-        `${process.env.REACT_APP_SERVER_URL}/coupon/delete-coupon/${id}`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/delete-coupon/${id}`,
         { withCredentials: true }
       )
       .then((res) => {
@@ -59,7 +61,7 @@ const AllCoupons = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_SERVER_URL}/coupon/create-coupon-code`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/create-coupon-code`,
         {
           name,
           minAmount,

@@ -18,7 +18,7 @@ const ShopInfo = ({ isOwner }) => {
     dispatch(getAllProductsShop(id));
     setIsLoading(true);
     axios
-      .get(`${process.env.REACT_APP_SERVER_URL}/shop/get-shop-info/${id}`)
+      .get(`${import.meta.env.VITE_APP_SERVER_URL}/shop/get-shop-info/${id}`)
       .then((res) => {
         setData(res.data.shop);
         setIsLoading(false);
@@ -30,7 +30,7 @@ const ShopInfo = ({ isOwner }) => {
   }, []);
 
   const logoutHandler = async () => {
-    axios.get(`${process.env.REACT_APP_SERVER_URL}/shop/logout`, {
+    axios.get(`${import.meta.env.VITE_APP_SERVER_URL}/shop/logout`, {
       withCredentials: true,
     });
     window.location.reload();
@@ -59,7 +59,7 @@ const ShopInfo = ({ isOwner }) => {
           <div className="w-full py-5">
             <div className="w-full flex item-center justify-center">
               <img
-                src={`${process.env.REACT_APP_BACKEND_URL}/${data.avatar}`}
+                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data.avatar}`}
                 alt=""
                 className="w-[150px] h-[150px] object-cover rounded-full"
               />

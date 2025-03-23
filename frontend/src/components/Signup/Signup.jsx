@@ -32,7 +32,7 @@ const Singup = () => {
 
     axios
       .post(
-        `${process.env.REACT_APP_SERVER_URL}/user/create-user`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/user/create-user`,
         newForm,
         config
       )

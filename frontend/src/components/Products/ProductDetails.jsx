@@ -96,7 +96,9 @@ const ProductDetails = ({ data }) => {
       const sellerId = data.shop._id;
       await axios
         .post(
-          `${process.env.REACT_APP_SERVER_URL}/conversation/create-new-conversation`,
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
+          }/conversation/create-new-conversation`,
           {
             groupTitle,
             userId,
@@ -122,7 +124,7 @@ const ProductDetails = ({ data }) => {
             <div className="block w-full 800px:flex">
               <div className="w-full 800px:w-[50%]">
                 <img
-                  src={`${process.env.REACT_APP_BACKEND_URL}/${
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
                     data && data.images[select]
                   }`}
                   alt=""
@@ -137,7 +139,7 @@ const ProductDetails = ({ data }) => {
                         } cursor-pointer`}
                       >
                         <img
-                          src={`${process.env.REACT_APP_BACKEND_URL}/${i}`}
+                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${i}`}
                           alt=""
                           className="h-[200px] overflow-hidden mr-3 mt-3"
                           onClick={() => setSelect(index)}
@@ -212,7 +214,9 @@ const ProductDetails = ({ data }) => {
                 <div className="flex items-center pt-8">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
                     <img
-                      src={`${process.env.REACT_APP_BACKEND_URL}/${data?.shop?.avatar}`}
+                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                        data?.shop?.avatar
+                      }`}
                       alt=""
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
@@ -318,7 +322,9 @@ const ProductDetailsInfo = ({
             data.reviews.map((item, index) => (
               <div className="w-full flex my-2">
                 <img
-                  src={`${process.env.REACT_APP_BACKEND_URL}/${item.user.avatar}`}
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                    item.user.avatar
+                  }`}
                   alt=""
                   className="w-[50px] h-[50px] rounded-full"
                 />
@@ -346,7 +352,9 @@ const ProductDetailsInfo = ({
             <Link to={`/shop/preview/${data.shop._id}`}>
               <div className="flex items-center">
                 <img
-                  src={`${process.env.REACT_APP_BACKEND_URL}/${data?.shop?.avatar}`}
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                    data?.shop?.avatar
+                  }`}
                   className="w-[50px] h-[50px] rounded-full"
                   alt=""
                 />

@@ -9,7 +9,7 @@ export const getAllSellers = () => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/shop/admin-all-sellers`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/shop/admin-all-sellers`,
       {
         withCredentials: true,
       }

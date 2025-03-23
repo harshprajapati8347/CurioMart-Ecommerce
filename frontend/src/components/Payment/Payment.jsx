@@ -85,7 +85,7 @@ const Payment = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_SERVER_URL}/order/create-order`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/order/create-order`,
         order,
         config
       )
@@ -113,7 +113,7 @@ const Payment = () => {
       };
 
       const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/payment/process`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/payment/process`,
         paymentData,
         config
       );
@@ -139,7 +139,7 @@ const Payment = () => {
 
           await axios
             .post(
-              `${process.env.REACT_APP_SERVER_URL}/order/create-order`,
+              `${import.meta.env.VITE_APP_SERVER_URL}/order/create-order`,
               order,
               config
             )
@@ -173,7 +173,7 @@ const Payment = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_SERVER_URL}/order/create-order`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/order/create-order`,
         order,
         config
       )

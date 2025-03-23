@@ -11,7 +11,7 @@ export const createProduct = (newForm) => async (dispatch) => {
     const config = { headers: { "Content-Type": "multipart/form-data" } };
 
     const { data } = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/product/create-product`,
+      `${import.meta.env.VITE_APP_SERVER_URL}/product/create-product`,
       newForm,
       config
     );
@@ -35,7 +35,9 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/product/get-all-products-shop/${id}`
+      `${
+        import.meta.env.VITE_APP_SERVER_URL
+      }/product/get-all-products-shop/${id}`
     );
     dispatch({
       type: "getAllProductsShopSuccess",
@@ -57,7 +59,9 @@ export const deleteProduct = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_SERVER_URL}/product/delete-shop-product/${id}`,
+      `${
+        import.meta.env.VITE_APP_SERVER_URL
+      }/product/delete-shop-product/${id}`,
       {
         withCredentials: true,
       }
@@ -83,7 +87,7 @@ export const getAllProducts = () => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/product/get-all-products`
+      `${import.meta.env.VITE_APP_SERVER_URL}/product/get-all-products`
     );
     dispatch({
       type: "getAllProductsSuccess",

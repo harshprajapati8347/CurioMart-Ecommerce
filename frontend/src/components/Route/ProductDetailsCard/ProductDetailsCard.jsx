@@ -84,7 +84,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             <div className="block w-full 800px:flex">
               <div className="w-full 800px:w-[50%]">
                 <img
-                  src={`${process.env.REACT_APP_BACKEND_URL}/${
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
                     data.images && data.images[0]
                   }`}
                   alt=""
@@ -92,7 +92,9 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 <div className="flex">
                   <Link to={`/shop/preview/${data.shop._id}`} className="flex">
                     <img
-                      src={`${process.env.REACT_APP_BACKEND_URL}/${data?.shop?.avatar}`}
+                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                        data?.shop?.avatar
+                      }`}
                       alt=""
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />

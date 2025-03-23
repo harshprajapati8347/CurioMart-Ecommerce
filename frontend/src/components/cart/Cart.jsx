@@ -137,7 +137,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           </div>
         </div>
         <img
-          src={`${process.env.REACT_APP_BACKEND_URL}/${data?.images[0]}`}
+          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.images[0]}`}
           alt=""
           className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
         />

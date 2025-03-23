@@ -73,7 +73,7 @@ const ProductCard = ({ data, isEvent }) => {
           }`}
         >
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${
+            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
               data.images && data.images[0]
             }`}
             alt=""

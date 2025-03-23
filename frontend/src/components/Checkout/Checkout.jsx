@@ -74,7 +74,7 @@ const Checkout = () => {
 
     await axios
       .get(
-        `${process.env.REACT_APP_SERVER_URL}/coupon/get-coupon-value/${name}`
+        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/get-coupon-value/${name}`
       )
       .then((res) => {
         const shopId = res.data.couponCode?.shopId;

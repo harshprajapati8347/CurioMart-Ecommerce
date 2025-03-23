@@ -10,7 +10,7 @@ import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import { TfiGallery } from "react-icons/tfi";
 import styles from "../styles/styles";
 // const ENDPOINT = "https://curiomart-socket-harsh.onrender.com";
-const ENDPOINT = `${process.env.REACT_APP_SOCKET_URL}`;
+const ENDPOINT = `${import.meta.env.VITE_APP_SOCKET_URL}`;
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const UserInbox = () => {
@@ -47,7 +47,9 @@ const UserInbox = () => {
     const getConversation = async () => {
       try {
         const resonse = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/conversation/get-all-conversation-user/${user?._id}`,
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
+          }/conversation/get-all-conversation-user/${user?._id}`,
           {
             withCredentials: true,
           }
@@ -83,7 +85,9 @@ const UserInbox = () => {
     const getMessage = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/message/get-all-messages/${currentChat?._id}`
+          `${import.meta.env.VITE_APP_SERVER_URL}/message/get-all-messages/${
+            currentChat?._id
+          }`
         );
         setMessages(response.data.messages);
       } catch (error) {
@@ -116,7 +120,7 @@ const UserInbox = () => {
       if (newMessage !== "") {
         await axios
           .post(
-            `${process.env.REACT_APP_SERVER_URL}/message/create-new-message`,
+            `${import.meta.env.VITE_APP_SERVER_URL}/message/create-new-message`,
             message
           )
           .then((res) => {
@@ -140,7 +144,9 @@ const UserInbox = () => {
 
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/conversation/update-last-message/${currentChat._id}`,
+        `${
+          import.meta.env.VITE_APP_SERVER_URL
+        }/conversation/update-last-message/${currentChat._id}`,
         {
           lastMessage: newMessage,
           lastMessageId: user._id,
@@ -181,7 +187,7 @@ const UserInbox = () => {
     try {
       await axios
         .post(
-          `${process.env.REACT_APP_SERVER_URL}/message/create-new-message`,
+          `${import.meta.env.VITE_APP_SERVER_URL}/message/create-new-message`,
           formData,
           {
             headers: {
@@ -201,7 +207,9 @@ const UserInbox = () => {
 
   const updateLastMessageForImage = async () => {
     await axios.put(
-      `${process.env.REACT_APP_SERVER_URL}/conversation/update-last-message/${currentChat._id}`,
+      `${
+        import.meta.env.VITE_APP_SERVER_URL
+      }/conversation/update-last-message/${currentChat._id}`,
       {
         lastMessage: "Photo",
         lastMessageId: user._id,
@@ -283,7 +291,7 @@ const MessageList = ({
     const getUser = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/shop/get-shop-info/${userId}`
+          `${import.meta.env.VITE_APP_SERVER_URL}/shop/get-shop-info/${userId}`
         );
         setUser(res.data.shop);
       } catch (error) {
@@ -308,7 +316,7 @@ const MessageList = ({
     >
       <div className="relative">
         <img
-          src={`${process.env.REACT_APP_BACKEND_URL}/${user?.avatar}`}
+          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
           alt=""
           className="w-[50px] h-[50px] rounded-full"
         />
@@ -349,7 +357,7 @@ const SellerInbox = ({
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${userData?.avatar}`}
+            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${userData?.avatar}`}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
@@ -377,14 +385,16 @@ const SellerInbox = ({
             >
               {item.sender !== sellerId && (
                 <img
-                  src={`${process.env.REACT_APP_BACKEND_URL}/${userData?.avatar}`}
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                    userData?.avatar
+                  }`}
                   className="w-[40px] h-[40px] rounded-full mr-3"
                   alt=""
                 />
               )}
               {item.images && (
                 <img
-                  src={`${process.env.REACT_APP_BACKEND_URL}/${item.images}`}
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images}`}
                   className="w-[300px] h-[300px] object-cover rounded-[10px] ml-2 mb-2"
                 />
               )}

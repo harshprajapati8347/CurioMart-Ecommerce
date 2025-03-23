@@ -26,7 +26,9 @@ const OrderDetails = () => {
   const orderUpdateHandler = async (e) => {
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/order/update-order-status/${id}`,
+        `${
+          import.meta.env.VITE_APP_SERVER_URL
+        }/order/update-order-status/${id}`,
         {
           status,
         },
@@ -44,7 +46,9 @@ const OrderDetails = () => {
   const refundOrderUpdateHandler = async (e) => {
     await axios
       .put(
-        `${process.env.REACT_APP_SERVER_URL}/order/order-refund-success/${id}`,
+        `${
+          import.meta.env.VITE_APP_SERVER_URL
+        }/order/order-refund-success/${id}`,
         {
           status,
         },
@@ -93,7 +97,7 @@ const OrderDetails = () => {
         data?.cart.map((item, index) => (
           <div className="w-full flex items-start mb-5">
             <img
-              src={`${process.env.REACT_APP_BACKEND_URL}/${item.images[0]}`}
+              src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images[0]}`}
               alt=""
               className="w-[80x] h-[80px]"
             />

@@ -33,7 +33,7 @@ const ShopCreate = () => {
     newForm.append("phoneNumber", phoneNumber);
     axios
       .post(
-        `${process.env.REACT_APP_SERVER_URL}/shop/create-shop`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/shop/create-shop`,
         newForm,
         config
       )
