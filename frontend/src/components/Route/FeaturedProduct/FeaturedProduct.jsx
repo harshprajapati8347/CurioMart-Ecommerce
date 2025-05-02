@@ -18,12 +18,12 @@ const FeaturedProduct = () => {
   }, [allProducts]);
 
   return (
-    <div>
+    <div className="my-12">
       <div className={`${styles.section}`}>
         <div className={`${styles.heading}`}>
           <h1>Featured Products</h1>
         </div>
-        <div className="mt-6">
+        <div>
           <Slider {...sliderSettings}>
             {productsByCategory && productsByCategory.length !== 0 ? (
               productsByCategory.map((product, index) => (

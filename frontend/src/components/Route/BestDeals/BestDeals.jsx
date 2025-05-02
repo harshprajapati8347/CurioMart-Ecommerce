@@ -24,7 +24,7 @@ const BestDeals = () => {
         <div className={`${styles.heading}`}>
           <h1>Best Deals</h1>
         </div>
-        <div className="mt-6">
+        <div>
           <Slider {...sliderSettings}>
             {data && data.length !== 0 ? (
               data.map((product, index) => (

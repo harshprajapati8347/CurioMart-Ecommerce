@@ -32,7 +32,7 @@ const CategoryWiseProductList = () => {
             <div className={`${styles.heading}`}>
               <h1>Best Deals on {category}</h1>
             </div>
-            <div className="mt-6">
+            <div>
               <Slider {...sliderSettings}>
                 {productsByCategory[category].map((product, index) => (
                   <div key={index} className="px-2">

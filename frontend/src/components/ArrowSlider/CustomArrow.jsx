@@ -4,7 +4,7 @@ import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 const CustomNextArrow = ({ onClick }) => (
   <div
     onClick={onClick}
-    className="absolute top-1/2 right-[-45px] z-10 transform -translate-y-1/2 w-12 h-full bg-white border border-gray-300 flex items-center justify-center shadow hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+    className="absolute top-1/2 right-[-45px] transform -translate-y-1/2 w-12 h-5/6 bg-white border border-gray-300 flex items-center justify-center shadow hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer rounded"
   >
     <FiChevronRight className="text-black text-2xl" />
   </div>
@@ -14,7 +14,7 @@ const CustomNextArrow = ({ onClick }) => (
 const CustomPrevArrow = ({ onClick }) => (
   <div
     onClick={onClick}
-    className="absolute top-1/2 left-[-45px] z-10 transform -translate-y-1/2 w-12 h-full bg-white border border-gray-300 flex items-center justify-center shadow hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+    className="absolute top-1/2 left-[-45px] transform -translate-y-1/2 w-12 h-5/6 bg-white border border-gray-300 flex items-center justify-center shadow hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
   >
     <FiChevronLeft className="text-black text-2xl" />
   </div>
