@@ -235,7 +235,7 @@ export const categoriesData = [
     subTitle:
       "Find the perfect gifts for every occasion — from birthdays to anniversaries and everything in between.",
     image_Url:
-      "https://pics.clipartpng.com/Gift_Box_in_Red_PNG_Clipart-276.png",
+      "https://img.freepik.com/free-photo/3d-illustration-closed-black-gift-box_107791-18203.jpg?t=st=1746183225~exp=1746186825~hmac=dea7b392cd6775658311bd7bc88ca3f629180636e4541d6258fac06877e046c4&w=740",
   },
   {
     id: 7,
@@ -243,7 +243,7 @@ export const categoriesData = [
     subTitle:
       "Treat your furry friends to premium pet food, grooming products, toys, and healthcare essentials.",
     image_Url:
-      "https://i.pinimg.com/736x/0e/a7/4c/0ea74c4c2b3227169bb15f95fde6d8e4.jpg",
+      "https://img.freepik.com/free-photo/grey-fluffy-domestic-cat-with-long-hair-showing-its-affection-brown-dog-with-long-hair_181624-45574.jpg?t=st=1746183269~exp=1746186869~hmac=9b7fe7e44565bfbb0b9e7c412efbf27de55b86b3ee93ca5edd5a31a6aa18a6ce&w=740",
   },
   {
     id: 8,
@@ -270,7 +270,6 @@ export const categoriesData = [
       "https://searchspring.com/wp-content/uploads/2022/10/Hero-Image-Platform-Others-2.png",
   },
 ];
-
 
 // product Data
 export const productData = [

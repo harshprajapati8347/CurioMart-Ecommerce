@@ -20,7 +20,7 @@ const sliderContent = [
     description:
       "Upgrade your tech game with massive savings on smartphones, laptops, and accessories. Hurry before it’s gone!",
     buttonText: "Grab Tech Deals",
-    buttonLink: "/products/Mobile and Tablets",
+    buttonLink: "/products?category=Computers and Laptops",
   },
   {
     image:
