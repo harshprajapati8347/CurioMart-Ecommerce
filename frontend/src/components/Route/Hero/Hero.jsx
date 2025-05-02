@@ -29,7 +29,7 @@ const sliderContent = [
     description:
       "Celebrate in style with exclusive festive deals on fashion, lifestyle, and home essentials. Shop your favorites now!",
     buttonText: "Celebrate & Save",
-    buttonLink: "/products",
+    buttonLink: "/events",
   },
 ];
 
