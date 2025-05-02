@@ -192,73 +192,85 @@ export const categoriesData = [
   {
     id: 1,
     title: "Computers and Laptops",
-    subTitle: "",
+    subTitle:
+      "Explore the latest laptops, desktops, and high-performance computing solutions for work and play.",
     image_Url:
       "https://cdn.shopify.com/s/files/1/1706/9177/products/NEWAppleMacbookProwithM1ProChip14InchLaptop2021ModelMKGQ3LL_A_16GB_1TBSSD_custommacbd.jpg?v=1659592838",
   },
   {
     id: 2,
-    title: "cosmetics and body care",
-    subTitle: "",
+    title: "Cosmetics and Body Care",
+    subTitle:
+      "Indulge in premium skincare, makeup, and grooming essentials to enhance your natural glow.",
     image_Url:
       "https://indian-retailer.s3.ap-south-1.amazonaws.com/s3fs-public/2021-07/kosme1.png",
   },
   {
     id: 3,
-    title: "Accesories",
-    subTitle: "",
+    title: "Accessories",
+    subTitle:
+      "Complete your look with stylish watches, bags, jewelry, and other must-have accessories.",
     image_Url:
       "https://img.freepik.com/free-vector/ordering-goods-online-internet-store-online-shopping-niche-e-commerce-website-mother-buying-babies-clothes-footwear-toys-infant-accessories_335657-2345.jpg?w=2000",
   },
   {
     id: 4,
-    title: "Cloths",
-    subTitle: "",
+    title: "Clothes",
+    subTitle:
+      "Shop the latest fashion trends in men’s, women’s, and kids’ apparel for every season.",
     image_Url:
       "https://www.shift4shop.com/2015/images/industries/clothing/clothing-apparel.png",
   },
   {
     id: 5,
     title: "Shoes",
-    subTitle: "",
+    subTitle:
+      "Step into comfort and style with a wide range of sneakers, boots, and formal footwear.",
     image_Url:
       "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/79ecdc1b-bca8-4a57-912c-2a128ef2277a/air-jordan-1-mid-mens-shoes-b3js2D.png",
   },
   {
     id: 6,
     title: "Gifts",
-    subTitle: "",
+    subTitle:
+      "Find the perfect gifts for every occasion — from birthdays to anniversaries and everything in between.",
     image_Url:
-      "https://content.pymnts.com/wp-content/uploads/2014/11/Gifts-Photo-700x489.jpg",
+      "https://pics.clipartpng.com/Gift_Box_in_Red_PNG_Clipart-276.png",
   },
   {
     id: 7,
     title: "Pet Care",
-    subTitle: "",
-    image_Url: "https://cdn.openpr.com/T/c/Tc15444071_g.jpg",
+    subTitle:
+      "Treat your furry friends to premium pet food, grooming products, toys, and healthcare essentials.",
+    image_Url:
+      "https://i.pinimg.com/736x/0e/a7/4c/0ea74c4c2b3227169bb15f95fde6d8e4.jpg",
   },
   {
     id: 8,
     title: "Mobile and Tablets",
-    subTitle: "",
+    subTitle:
+      "Stay connected with the latest smartphones, tablets, and accessories from top brands.",
     image_Url:
       "https://st-troy.mncdn.com/mnresize/1500/1500/Content/media/ProductImg/original/mpwp3tua-apple-iphone-14-256gb-mavi-mpwp3tua-637986832343472449.jpg",
   },
   {
     id: 9,
     title: "Music and Gaming",
-    subTitle: "",
+    subTitle:
+      "Level up your entertainment with top-tier headphones, speakers, consoles, and games.",
     image_Url:
       "https://static.vecteezy.com/system/resources/previews/011/996/555/original/3d-black-headphone-illustration-ecommerce-icon-png.png",
   },
   {
     id: 10,
     title: "Others",
-    subTitle: "",
+    subTitle:
+      "Browse through our unique and miscellaneous finds that don’t fit into the usual categories.",
     image_Url:
       "https://searchspring.com/wp-content/uploads/2022/10/Hero-Image-Platform-Others-2.png",
   },
 ];
+
 
 // product Data
 export const productData = [
