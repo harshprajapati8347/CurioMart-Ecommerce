@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   AiFillHeart,
   AiOutlineHeart,
@@ -84,11 +85,14 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const discountPercentage =
     data.originalPrice && data.discountPrice
       ? Math.round(
-          ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
+          ((data.originalPrice - data.discountPrice) / data.originalPrice) *
+            100,
         )
       : 0;
 
-  return (
+  if (!data) return null;
+
+  return createPortal(
     <div className="bg-[#fff]">
       {data ? (
         <div className="fixed w-full h-screen top-0 left-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -223,7 +227,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
               <div className="space-y-6">
                 {/* Product Title */}
                 <div>
-                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
+                  <h1 className="text-2xl font-bold text-gray-900 mb-3">
                     {data.name}
                   </h1>
                   <div className="flex items-center gap-2">
@@ -237,7 +241,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 {/* Price Section */}
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5">
                   <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-4xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-gray-900">
                       ₹{data.discountPrice}
                     </span>
                     {data.originalPrice && (
@@ -357,7 +361,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
           </div>
         </div>
       ) : null}
-    </div>
+    </div>,
+    document.body,
   );
 };
 

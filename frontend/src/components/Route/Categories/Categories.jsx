@@ -155,7 +155,7 @@ const Categories = () => {
 
                 {/* Bottom Gradient Accent */}
                 <div
-                  className={`h-0.5 md:h-1 bg-gradient-to-r from-blue-600 to-indigo-600 transition-opacity duration-300 ${
+                  className={`h-0.5 md:h-1 bg-gradient-to-r from-blue-600 to-indigo-600 transition-opacity duration-300 absolute bottom-0 left-0 right-0 ${
                     hoveredCard === category.id ? "opacity-100" : "opacity-0"
                   }`}
                 />

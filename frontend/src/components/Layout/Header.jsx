@@ -86,7 +86,7 @@ const Header = ({ activeHeading }) => {
                 </button>
 
                 {/* Search Results Dropdown */}
-                {searchData && searchData.length > 0 && (
+                {searchData && searchTerm && searchData.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
                     {searchData.map((item) => (
                       <Link
