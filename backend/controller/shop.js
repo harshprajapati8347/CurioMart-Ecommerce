@@ -79,7 +79,7 @@ router.post(
 
       const newSeller = jwt.verify(
         activation_token,
-        process.env.ACTIVATION_SECRET
+        process.env.ACTIVATION_SECRET,
       );
 
       if (!newSeller) {
@@ -108,7 +108,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // login shop
@@ -132,7 +132,7 @@ router.post(
 
       if (!isPasswordValid) {
         return next(
-          new ErrorHandler("Please provide the correct information", 400)
+          new ErrorHandler("Please provide the correct information", 400),
         );
       }
 
@@ -140,7 +140,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // load shop
@@ -162,7 +162,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // log out from shop
@@ -183,7 +183,87 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
+);
+
+// forgot password
+router.post(
+  "/forgot-password",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { email } = req.body;
+
+      const shop = await Shop.findOne({ email });
+
+      if (!shop) {
+        return next(new ErrorHandler("Shop not found with this email", 404));
+      }
+
+      // Create reset token
+      const resetToken = jwt.sign(
+        { id: shop._id },
+        process.env.ACTIVATION_SECRET,
+        { expiresIn: "15m" },
+      );
+
+      const resetUrl = `${process.env.FRONTEND_URL}/shop-reset-password?reset_token=${resetToken}`;
+
+      try {
+        await sendMail({
+          email: shop.email,
+          subject: "Password Reset Request",
+          message: `Hello ${shop.name}, please click on the link to reset your shop password: ${resetUrl}. This link will expire in 15 minutes.`,
+        });
+
+        res.status(200).json({
+          success: true,
+          message: `Password reset link has been sent to ${shop.email}`,
+        });
+      } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+      }
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }),
+);
+
+// reset password
+router.post(
+  "/reset-password",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { reset_token, password } = req.body;
+
+      if (!reset_token || !password) {
+        return next(
+          new ErrorHandler("Please provide reset token and new password", 400),
+        );
+      }
+
+      const decoded = jwt.verify(reset_token, process.env.ACTIVATION_SECRET);
+
+      if (!decoded) {
+        return next(new ErrorHandler("Invalid or expired reset token", 400));
+      }
+
+      const shop = await Shop.findById(decoded.id).select("+password");
+
+      if (!shop) {
+        return next(new ErrorHandler("Shop not found", 404));
+      }
+
+      shop.password = password;
+      await shop.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Password reset successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler("Invalid or expired reset token", 400));
+    }
+  }),
 );
 
 // get shop info
@@ -199,7 +279,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // update shop profile picture
@@ -228,7 +308,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // update seller info
@@ -260,7 +340,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // all sellers --- for admin
@@ -280,7 +360,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // delete seller ---admin
@@ -294,7 +374,7 @@ router.delete(
 
       if (!seller) {
         return next(
-          new ErrorHandler("Seller is not available with this id", 400)
+          new ErrorHandler("Seller is not available with this id", 400),
         );
       }
 
@@ -307,7 +387,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // update seller withdraw methods --- sellers
@@ -329,7 +409,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // delete seller withdraw merthods --- only seller
@@ -355,7 +435,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 module.exports = router;

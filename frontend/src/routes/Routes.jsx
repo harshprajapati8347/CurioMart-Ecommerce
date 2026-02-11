@@ -17,25 +17,33 @@ import ShopLoginPage from "../pages/ShopLoginPage.jsx";
 import OrderDetailsPage from "../pages/OrderDetailsPage.jsx";
 import TrackOrderPage from "../pages/TrackOrderPage.jsx";
 import UserInbox from "../pages/UserInbox.jsx";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
+import ShopForgotPasswordPage from "../pages/ShopForgotPasswordPage.jsx";
+import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
+import ShopResetPasswordPage from "../pages/ShopResetPasswordPage.jsx";
 
-export { 
-    LoginPage,
-    SignupPage,
-    ActivationPage,
-    HomePage,
-    ProductsPage,
-    BestSellingPage,
-    EventsPage,
-    FAQPage,
-    CheckoutPage,
-    PaymentPage,
-    OrderSuccessPage,
-    ProductDetailsPage,
-    ProfilePage,
-    ShopCreatePage,
-    SellerActivationPage,
-    ShopLoginPage,
-    OrderDetailsPage,
-    TrackOrderPage,
-    UserInbox
+export {
+  LoginPage,
+  SignupPage,
+  ActivationPage,
+  HomePage,
+  ProductsPage,
+  BestSellingPage,
+  EventsPage,
+  FAQPage,
+  CheckoutPage,
+  PaymentPage,
+  OrderSuccessPage,
+  ProductDetailsPage,
+  ProfilePage,
+  ShopCreatePage,
+  SellerActivationPage,
+  ShopLoginPage,
+  OrderDetailsPage,
+  TrackOrderPage,
+  UserInbox,
+  ForgotPasswordPage,
+  ShopForgotPasswordPage,
+  ResetPasswordPage,
+  ShopResetPasswordPage,
 };

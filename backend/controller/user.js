@@ -76,7 +76,7 @@ router.post(
 
       const newUser = jwt.verify(
         activation_token,
-        process.env.ACTIVATION_SECRET
+        process.env.ACTIVATION_SECRET,
       );
 
       if (!newUser) {
@@ -100,7 +100,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // login user
@@ -124,7 +124,7 @@ router.post(
 
       if (!isPasswordValid) {
         return next(
-          new ErrorHandler("Please provide the correct information", 400)
+          new ErrorHandler("Please provide the correct information", 400),
         );
       }
 
@@ -132,7 +132,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // load user
@@ -154,7 +154,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // log out user
@@ -175,7 +175,87 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
+);
+
+// forgot password
+router.post(
+  "/forgot-password",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { email } = req.body;
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return next(new ErrorHandler("User not found with this email", 404));
+      }
+
+      // Create reset token
+      const resetToken = jwt.sign(
+        { id: user._id },
+        process.env.ACTIVATION_SECRET,
+        { expiresIn: "15m" },
+      );
+
+      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?reset_token=${resetToken}`;
+
+      try {
+        await sendMail({
+          email: user.email,
+          subject: "Password Reset Request",
+          message: `Hello ${user.name}, please click on the link to reset your password: ${resetUrl}. This link will expire in 15 minutes.`,
+        });
+
+        res.status(200).json({
+          success: true,
+          message: `Password reset link has been sent to ${user.email}`,
+        });
+      } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+      }
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }),
+);
+
+// reset password
+router.post(
+  "/reset-password",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { reset_token, password } = req.body;
+
+      if (!reset_token || !password) {
+        return next(
+          new ErrorHandler("Please provide reset token and new password", 400),
+        );
+      }
+
+      const decoded = jwt.verify(reset_token, process.env.ACTIVATION_SECRET);
+
+      if (!decoded) {
+        return next(new ErrorHandler("Invalid or expired reset token", 400));
+      }
+
+      const user = await User.findById(decoded.id).select("+password");
+
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+
+      user.password = password;
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Password reset successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler("Invalid or expired reset token", 400));
+    }
+  }),
 );
 
 // update user info
@@ -196,7 +276,7 @@ router.put(
 
       if (!isPasswordValid) {
         return next(
-          new ErrorHandler("Please provide the correct information", 400)
+          new ErrorHandler("Please provide the correct information", 400),
         );
       }
 
@@ -213,7 +293,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // update user avatar
@@ -242,7 +322,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // update user addresses
@@ -254,16 +334,16 @@ router.put(
       const user = await User.findById(req.user.id);
 
       const sameTypeAddress = user.addresses.find(
-        (address) => address.addressType === req.body.addressType
+        (address) => address.addressType === req.body.addressType,
       );
       if (sameTypeAddress) {
         return next(
-          new ErrorHandler(`${req.body.addressType} address already exists`)
+          new ErrorHandler(`${req.body.addressType} address already exists`),
         );
       }
 
       const existsAddress = user.addresses.find(
-        (address) => address._id === req.body._id
+        (address) => address._id === req.body._id,
       );
 
       if (existsAddress) {
@@ -282,7 +362,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // delete user address
@@ -300,7 +380,7 @@ router.delete(
         {
           _id: userId,
         },
-        { $pull: { addresses: { _id: addressId } } }
+        { $pull: { addresses: { _id: addressId } } },
       );
 
       const user = await User.findById(userId);
@@ -309,7 +389,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // update user password
@@ -321,7 +401,7 @@ router.put(
       const user = await User.findById(req.user.id).select("+password");
 
       const isPasswordMatched = await user.comparePassword(
-        req.body.oldPassword
+        req.body.oldPassword,
       );
 
       if (!isPasswordMatched) {
@@ -330,7 +410,7 @@ router.put(
 
       if (req.body.newPassword !== req.body.confirmPassword) {
         return next(
-          new ErrorHandler("Password doesn't matched with each other!", 400)
+          new ErrorHandler("Password doesn't matched with each other!", 400),
         );
       }
       user.password = req.body.newPassword;
@@ -344,7 +424,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // find user infoormation with the userId
@@ -361,7 +441,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // all users --- for admin
@@ -381,7 +461,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 // delete users --- admin
@@ -395,7 +475,7 @@ router.delete(
 
       if (!user) {
         return next(
-          new ErrorHandler("User is not available with this id", 400)
+          new ErrorHandler("User is not available with this id", 400),
         );
       }
 
@@ -408,7 +488,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 
 module.exports = router;

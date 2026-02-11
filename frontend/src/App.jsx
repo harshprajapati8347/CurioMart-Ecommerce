@@ -21,6 +21,10 @@ import {
   OrderDetailsPage,
   TrackOrderPage,
   UserInbox,
+  ForgotPasswordPage,
+  ShopForgotPasswordPage,
+  ResetPasswordPage,
+  ShopResetPasswordPage,
 } from "./routes/Routes.jsx";
 import {
   ShopDashboardPage,
@@ -66,7 +70,7 @@ const App = () => {
 
   async function getStripeApikey() {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_SERVER_URL}/payment/stripeapikey`
+      `${import.meta.env.VITE_APP_SERVER_URL}/payment/stripeapikey`,
     );
     setStripeApiKey(data.stripeApikey);
   }
@@ -98,6 +102,8 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/activation" element={<ActivationPage />} />
         <Route path="/seller/activation" element={<SellerActivationPage />} />
         <Route path="/products" element={<ProductsPage />} />
@@ -150,6 +156,14 @@ const App = () => {
         {/* shop Routes */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
+        <Route
+          path="/shop-forgot-password"
+          element={<ShopForgotPasswordPage />}
+        />
+        <Route
+          path="/shop-reset-password"
+          element={<ShopResetPasswordPage />}
+        />
         <Route
           path="/shop/:id"
           element={
