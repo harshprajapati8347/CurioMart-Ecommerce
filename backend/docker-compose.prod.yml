@@ -1,16 +1,16 @@
+version: "3.9"
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ecommerce_api
+    container_name: ecommerce_api_prod
     restart: unless-stopped
     ports:
       - "5000:5000"
     env_file:
-      - ./config/.env
+      - /etc/curiomart-server.env
     environment:
       NODE_ENV: production
-    volumes:
-      - .:/app
-      - /app/node_modules
+    command: npm start
