@@ -1,9 +1,14 @@
 import { React, useState, useEffect } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import styles from "../../styles/styles";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineLock,
+} from "react-icons/ai";
+import { HiShieldCheck } from "react-icons/hi";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import AuthLayout from "../Layout/AuthLayout";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -40,122 +45,167 @@ const ResetPassword = () => {
 
     setIsLoading(true);
 
-    await axios
-      .post(
+    try {
+      const res = await axios.post(
         `${import.meta.env.VITE_APP_SERVER_URL}/user/reset-password`,
         {
           reset_token: resetToken,
           password,
         },
         { withCredentials: true },
-      )
-      .then((res) => {
-        toast.success(res.data.message);
-        navigate("/login");
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      );
+      toast.success(res.data.message);
+      navigate("/login");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to reset password");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Reset your password
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Enter your new password below
-        </p>
-      </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                New Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  type={visible ? "text" : "password"}
-                  name="password"
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-                {visible ? (
-                  <AiOutlineEye
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisible(false)}
-                  />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisible(true)}
-                  />
-                )}
-              </div>
+    <AuthLayout
+      title="Reset Password"
+      subtitle="Create a new secure password for your account"
+    >
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* Password Strength Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <HiShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-blue-800">
+              <p className="font-medium mb-1">Password requirements:</p>
+              <ul className="list-disc list-inside space-y-1 text-xs">
+                <li>At least 6 characters long</li>
+                <li>Mix of letters and numbers recommended</li>
+              </ul>
             </div>
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirm New Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  type={visibleConfirm ? "text" : "password"}
-                  name="confirmPassword"
-                  autoComplete="new-password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-                {visibleConfirm ? (
-                  <AiOutlineEye
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisibleConfirm(false)}
-                  />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisibleConfirm(true)}
-                  />
-                )}
-              </div>
-            </div>
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
-              >
-                {isLoading ? "Resetting..." : "Reset Password"}
-              </button>
-            </div>
-            <div className={`${styles.noramlFlex} w-full justify-center`}>
-              <Link to="/login" className="text-blue-600">
-                Back to Login
-              </Link>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
+
+        {/* New Password Field */}
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            New Password
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <AiOutlineLock className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type={visible ? "text" : "password"}
+              name="password"
+              id="password"
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+              placeholder="Enter new password"
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              onClick={() => setVisible(!visible)}
+            >
+              {visible ? (
+                <AiOutlineEye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+              ) : (
+                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Confirm Password Field */}
+        <div>
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Confirm New Password
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <AiOutlineLock className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type={visibleConfirm ? "text" : "password"}
+              name="confirmPassword"
+              id="confirmPassword"
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+              placeholder="Confirm new password"
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              onClick={() => setVisibleConfirm(!visibleConfirm)}
+            >
+              {visibleConfirm ? (
+                <AiOutlineEye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+              ) : (
+                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+              )}
+            </button>
+          </div>
+          {password && confirmPassword && password !== confirmPassword && (
+            <p className="mt-2 text-sm text-red-600">Passwords do not match</p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5"
+        >
+          {isLoading ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Resetting password...
+            </>
+          ) : (
+            "Reset Password"
+          )}
+        </button>
+
+        {/* Back to Login */}
+        <div className="text-center pt-4">
+          <Link
+            to="/login"
+            className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
+          >
+            ← Back to Login
+          </Link>
+        </div>
+      </form>
+    </AuthLayout>
   );
 };
 
