@@ -21,4 +21,4 @@ jobs:
           script: |
             cd /home/ubuntu/curiomart/backend
             git pull
-            docker compose -f docker-compose.prod.yml up -d --build
+            sudo docker compose -f docker-compose.prod.yml up -d --build
