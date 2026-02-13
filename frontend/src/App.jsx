@@ -25,6 +25,7 @@ import {
   ShopForgotPasswordPage,
   ResetPasswordPage,
   ShopResetPasswordPage,
+  CartPage,
 } from "./routes/Routes.jsx";
 import {
   ShopDashboardPage,
@@ -111,6 +112,7 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/cart" element={<CartPage />} />
         <Route
           path="/checkout"
           element={

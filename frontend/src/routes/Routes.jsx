@@ -21,6 +21,7 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
 import ShopForgotPasswordPage from "../pages/ShopForgotPasswordPage.jsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
 import ShopResetPasswordPage from "../pages/ShopResetPasswordPage.jsx";
+import CartPage from "../pages/CartPage.jsx";
 
 export {
   LoginPage,
@@ -46,4 +47,5 @@ export {
   ShopForgotPasswordPage,
   ResetPasswordPage,
   ShopResetPasswordPage,
+  CartPage,
 };
