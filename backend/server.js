@@ -23,7 +23,7 @@ const server = app.listen(process.env.PORT, () => {
 });
 
 app.get("/", (req, res) => {
-  res.send("API is running....");
+  res.send("API is running on port 5000....");
 });
 
 // unhandled promise rejection
