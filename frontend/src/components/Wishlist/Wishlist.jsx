@@ -1,115 +1,159 @@
-import React, { useState } from "react";
-import { RxCross1 } from "react-icons/rx";
-import { IoBagHandleOutline } from "react-icons/io5";
-import { BsCartPlus } from "react-icons/bs";
-import styles from "../../styles/styles";
+import React, { useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
-import { backend_url } from "../../server";
 import { addTocart } from "../../redux/actions/cart";
+import WishlistHeader from "./WishlistHeader";
+import WishlistItem from "./WishlistItem";
+import EmptyWishlist from "./EmptyWishlist";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
 
-  const removeFromWishlistHandler = (data) => {
-    dispatch(removeFromWishlist(data));
-  };
+  // Close wishlist on Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        setOpenWishlist(false);
+      }
+    };
 
-  const addToCartHandler = (data) => {
-    const newData = { ...data, qty: 1 };
-    dispatch(addTocart(newData));
-    setOpenWishlist(false);
-  };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [setOpenWishlist]);
+
+  // Prevent body scroll when wishlist is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
+  const removeFromWishlistHandler = useCallback(
+    (data) => {
+      dispatch(removeFromWishlist(data));
+    },
+    [dispatch],
+  );
+
+  const addToCartHandler = useCallback(
+    (data) => {
+      const newData = { ...data, qty: 1 };
+      dispatch(addTocart(newData));
+      setOpenWishlist(false);
+    },
+    [dispatch, setOpenWishlist],
+  );
+
+  const itemCount = wishlist ? wishlist.length : 0;
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
-      <div className="fixed top-0 right-0 h-full w-[80%] overflow-y-scroll 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm">
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[999] transition-opacity duration-300 ease-out animate-fadeIn"
+        onClick={() => setOpenWishlist(false)}
+        aria-hidden="true"
+      />
+
+      {/* Wishlist Drawer */}
+      <div
+        className="fixed top-0 right-0 h-full w-full sm:w-[420px] md:w-[450px] bg-white shadow-2xl z-[1000] flex flex-col animate-slideInRight"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wishlist-title"
+      >
+        {/* Header */}
+        <WishlistHeader
+          itemCount={itemCount}
+          onClose={() => setOpenWishlist(false)}
+        />
+
+        {/* Content */}
         {wishlist && wishlist.length === 0 ? (
-          <div className="w-full h-screen flex items-center justify-center">
-            <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
-              <RxCross1
-                size={25}
-                className="cursor-pointer"
-                onClick={() => setOpenWishlist(false)}
-              />
-            </div>
-            <h5>Wishlist Items is empty!</h5>
-          </div>
+          <EmptyWishlist onClose={() => setOpenWishlist(false)} />
         ) : (
           <>
-            <div>
-              <div className="flex w-full justify-end pt-5 pr-5">
-                <RxCross1
-                  size={25}
-                  className="cursor-pointer"
-                  onClick={() => setOpenWishlist(false)}
-                />
-              </div>
-              {/* Item length */}
-              <div className={`${styles.noramlFlex} p-4`}>
-                <AiOutlineHeart size={25} />
-                <h5 className="pl-2 text-[20px] font-[500]">
-                  {wishlist && wishlist.length} items
-                </h5>
-              </div>
-
-              {/* cart Single Items */}
-              <br />
-              <div className="w-full border-t">
+            {/* Wishlist Items - Scrollable */}
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+              <div className="divide-y divide-gray-100">
                 {wishlist &&
-                  wishlist.map((i, index) => (
-                    <CartSingle
-                      key={index}
-                      data={i}
+                  wishlist.map((item, index) => (
+                    <WishlistItem
+                      key={item._id || index}
+                      data={item}
                       removeFromWishlistHandler={removeFromWishlistHandler}
                       addToCartHandler={addToCartHandler}
                     />
                   ))}
               </div>
             </div>
+
+            {/* View Full Wishlist Button - Sticky at Bottom */}
+            <div className="border-t border-gray-200 p-4 bg-white">
+              <Link to="/wishlist" onClick={() => setOpenWishlist(false)}>
+                <button className="w-full bg-gradient-to-r from-pink-500 to-red-600 hover:from-pink-600 hover:to-red-700 text-white font-semibold py-3.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                  <AiOutlineHeart size={20} />
+                  View Full Wishlist
+                </button>
+              </Link>
+            </div>
           </>
         )}
       </div>
-    </div>
-  );
-};
 
-const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
-  const [value, setValue] = useState(1);
-  const totalPrice = data.discountPrice * value;
+      {/* Custom Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
 
-  return (
-    <div className="border-b p-4">
-      <div className="w-full 800px:flex items-center">
-        <RxCross1
-          className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2"
-          onClick={() => removeFromWishlistHandler(data)}
-        />
-        <img
-          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.images[0]}`}
-          alt=""
-          className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
-        />
+        @keyframes slideInRight {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
 
-        <div className="pl-[5px]">
-          <h1>{data.name}</h1>
-          <h4 className="font-[600] pt-3 800px:pt-[3px] text-[17px] text-[#d02222] font-Roboto">
-            IND₹{totalPrice}
-          </h4>
-        </div>
-        <div>
-          <BsCartPlus
-            size={20}
-            className="cursor-pointer"
-            tile="Add to cart"
-            onClick={() => addToCartHandler(data)}
-          />
-        </div>
-      </div>
-    </div>
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-slideInRight {
+          animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Custom Scrollbar */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #cbd5e0;
+          border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: #a0aec0;
+        }
+      `}</style>
+    </>
   );
 };
 
