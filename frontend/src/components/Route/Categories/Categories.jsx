@@ -41,10 +41,10 @@ const Categories = () => {
       {/* Categories Section */}
       <div className={`${styles.section} mb-8 md:mb-12`} id="categories">
         {/* Section Header */}
-        <div className="mb-4 md:mb-6">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+        <div className={`${styles.heading}`}>
+          <h1 className="mt-4">
             Shop by Category
-          </h2>
+          </h1>
           <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1 md:mt-2">
             Discover products across all categories
           </p>

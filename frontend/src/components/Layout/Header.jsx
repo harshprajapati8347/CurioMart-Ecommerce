@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { categoriesData } from "../../static/data";
 import {
@@ -31,6 +31,10 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // Refs for click outside detection
+  const desktopSearchRef = useRef(null);
+  const mobileSearchRef = useRef(null);
+
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -38,10 +42,64 @@ const Header = ({ activeHeading }) => {
     const filteredProducts =
       allProducts &&
       allProducts.filter((product) =>
-        product.name.toLowerCase().includes(term.toLowerCase())
+        product.name.toLowerCase().includes(term.toLowerCase()),
       );
     setSearchData(filteredProducts);
   };
+
+  const clearSearch = () => {
+    setSearchTerm("");
+    setSearchData(null);
+  };
+
+  // Close search dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        desktopSearchRef.current &&
+        !desktopSearchRef.current.contains(event.target)
+      ) {
+        if (searchData && searchTerm) {
+          clearSearch();
+        }
+      }
+      if (
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(event.target)
+      ) {
+        if (searchData && searchTerm) {
+          clearSearch();
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [searchData, searchTerm]);
+
+  // Handle ESC key to close mobile menu
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && open) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [open]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,7 +126,7 @@ const Header = ({ activeHeading }) => {
 
             {/* Search Bar */}
             <div className="flex-1 max-w-2xl mx-8">
-              <div className="relative">
+              <div className="relative" ref={desktopSearchRef}>
                 <input
                   type="search"
                   placeholder="Search for products..."
@@ -93,10 +151,7 @@ const Header = ({ activeHeading }) => {
                         key={item._id}
                         to={`/product/${item._id}`}
                         className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
-                        onClick={() => {
-                          setSearchTerm("");
-                          setSearchData(null);
-                        }}
+                        onClick={clearSearch}
                       >
                         <img
                           src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
@@ -233,61 +288,144 @@ const Header = ({ activeHeading }) => {
           active ? "fixed top-0 left-0 right-0 z-40 shadow-md" : ""
         }`}
       >
-        <div className="flex items-center justify-between h-16 px-4">
-          {/* Menu Button */}
+        {/* Top Row: Menu, Logo, Icons */}
+        <div className="flex items-center justify-between h-16 px-3 sm:px-4">
+          {/* Left: Hamburger Menu */}
           <button
             onClick={() => setOpen(true)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
             aria-label="Open menu"
           >
             <BiMenuAltLeft size={28} className="text-gray-900" />
           </button>
 
-          {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <img src={logo} alt="Logo" className="h-10 w-auto object-contain" />
+          {/* Center: Logo */}
+          <Link to="/" className="flex-shrink-0 mx-2">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-9 sm:h-10 w-auto object-contain"
+            />
           </Link>
 
-          {/* Cart Button */}
-          <button
-            onClick={() => setOpenCart(true)}
-            className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label={`Cart with ${cart?.length || 0} items`}
-          >
-            <AiOutlineShoppingCart size={24} className="text-gray-900" />
-            {cart && cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
-                {cart.length}
-              </span>
+          {/* Right: Action Icons */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Wishlist Button */}
+            <button
+              onClick={() => setOpenWishlist(true)}
+              className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              aria-label={`Wishlist with ${wishlist?.length || 0} items`}
+            >
+              <AiOutlineHeart size={22} className="text-gray-900" />
+              {wishlist && wishlist.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlist.length}
+                </span>
+              )}
+            </button>
+
+            {/* Cart Button */}
+            <button
+              onClick={() => setOpenCart(true)}
+              className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              aria-label={`Cart with ${cart?.length || 0} items`}
+            >
+              <AiOutlineShoppingCart size={22} className="text-gray-900" />
+              {cart && cart.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cart.length}
+                </span>
+              )}
+            </button>
+
+            {/* Profile Button */}
+            <Link
+              to={isAuthenticated ? "/profile" : "/login"}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              aria-label={isAuthenticated ? "Profile" : "Login"}
+            >
+              {isAuthenticated ? (
+                <img
+                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
+                  alt="Profile"
+                  className="w-7 h-7 rounded-full object-cover border-2 border-gray-300"
+                />
+              ) : (
+                <CgProfile size={22} className="text-gray-900" />
+              )}
+            </Link>
+          </div>
+        </div>
+
+        {/* Bottom Row: Search Bar */}
+        <div className="px-3 sm:px-4 pb-3" ref={mobileSearchRef}>
+          <div className="relative">
+            <input
+              type="search"
+              placeholder="Search for products..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full h-10 pl-4 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+              aria-label="Search products"
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label="Search"
+            >
+              <AiOutlineSearch size={20} />
+            </button>
+
+            {/* Mobile Search Results Dropdown */}
+            {searchData && searchTerm && searchData.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+                {searchData.map((item) => (
+                  <Link
+                    key={item._id}
+                    to={`/product/${item._id}`}
+                    className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                    onClick={clearSearch}
+                  >
+                    <img
+                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images[0]}`}
+                      alt={item.name}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                    <span className="text-sm text-gray-700 line-clamp-2 flex-1">
+                      {item.name}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             )}
-          </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar with Animations */}
       {open && (
         <div
           className="fixed inset-0 z-50 lg:hidden"
           role="dialog"
           aria-modal="true"
         >
-          {/* Overlay */}
+          {/* Overlay with Fade Animation */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out animate-fadeIn"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Sidebar Content */}
-          <div className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto">
+          {/* Sidebar Content with Slide Animation */}
+          <div className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto animate-slideInLeft">
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
               <button
                 onClick={() => {
                   setOpenWishlist(true);
                   setOpen(false);
                 }}
-                className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="relative p-2 hover:bg-white/80 rounded-lg transition-all"
                 aria-label={`Wishlist with ${wishlist?.length || 0} items`}
               >
                 <AiOutlineHeart size={24} className="text-gray-900" />
@@ -298,76 +436,78 @@ const Header = ({ activeHeading }) => {
                 )}
               </button>
 
+              {/* Close Button with Hover Effect */}
               <button
                 onClick={() => setOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2.5 hover:bg-red-50 rounded-lg transition-all group"
                 aria-label="Close menu"
               >
-                <RxCross1 size={24} className="text-gray-900" />
+                <RxCross1
+                  size={24}
+                  className="text-gray-900 group-hover:text-red-600 transition-colors"
+                />
               </button>
             </div>
 
-            {/* Search Bar */}
-            <div className="p-4">
-              <div className="relative">
+            {/* Search Bar - Matching Desktop Behavior */}
+            <div className="p-4 bg-gray-50">
+              <div className="relative" ref={mobileSearchRef}>
                 <input
                   type="search"
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  className="w-full h-11 pl-4 pr-12 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full h-11 pl-4 pr-12 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                   aria-label="Search products"
                 />
                 <AiOutlineSearch
                   size={20}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
                 />
 
-                {/* Mobile Search Results */}
-                {searchData && searchData.length > 0 && (
+                {/* Mobile Search Results - Matching Desktop */}
+                {searchData && searchTerm && searchData.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
-                    {searchData.map((item) => {
-                      const productName = item.name.replace(/\s+/g, "-");
-                      return (
-                        <Link
-                          key={item._id}
-                          to={`/product/${productName}`}
-                          className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
-                          onClick={() => {
-                            setSearchTerm("");
-                            setSearchData(null);
-                            setOpen(false);
-                          }}
-                        >
-                          <img
-                            src={item.image_Url?.[0]?.url}
-                            alt={item.name}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                          <span className="text-sm text-gray-700 line-clamp-2">
-                            {item.name}
-                          </span>
-                        </Link>
-                      );
-                    })}
+                    {searchData.map((item) => (
+                      <Link
+                        key={item._id}
+                        to={`/product/${item._id}`}
+                        className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
+                        onClick={() => {
+                          clearSearch();
+                          setOpen(false);
+                        }}
+                      >
+                        <img
+                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                            item.images[0]
+                          }`}
+                          alt={item.name}
+                          className="w-12 h-12 object-cover rounded"
+                        />
+                        <span className="text-sm text-gray-700 line-clamp-2">
+                          {item.name}
+                        </span>
+                      </Link>
+                    ))}
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Navigation */}
+            {/* Navigation with Hover Effects */}
             <div className="px-4">
-              <Navbar active={activeHeading} />
+              <Navbar active={activeHeading} isMobile={true} />
             </div>
 
             {/* Seller CTA */}
             <div className="px-4 py-3">
               <Link
-                to="/shop-create"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                to={`${isSeller ? "/dashboard" : "/shop-create"}`}
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 onClick={() => setOpen(false)}
               >
-                Become Seller
+                {isSeller ? "Dashboard" : "Become Seller"}
                 <IoIosArrowForward size={18} />
               </Link>
             </div>
@@ -377,7 +517,7 @@ const Header = ({ activeHeading }) => {
               {isAuthenticated ? (
                 <Link
                   to="/profile"
-                  className="flex items-center gap-3"
+                  className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-all"
                   onClick={() => setOpen(false)}
                 >
                   <img
@@ -396,15 +536,15 @@ const Header = ({ activeHeading }) => {
                 <div className="flex items-center gap-2 justify-center text-sm">
                   <Link
                     to="/login"
-                    className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
+                    className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium hover:bg-gray-100 rounded-lg transition-all"
                     onClick={() => setOpen(false)}
                   >
                     Login
                   </Link>
-                  <span className="text-gray-400">/</span>
+                  <span className="text-gray-400">|</span>
                   <Link
                     to="/sign-up"
-                    className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
+                    className="px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium hover:bg-gray-100 rounded-lg transition-all"
                     onClick={() => setOpen(false)}
                   >
                     Sign Up
@@ -421,6 +561,55 @@ const Header = ({ activeHeading }) => {
 
       {/* Wishlist Popup */}
       {openWishlist && <Wishlist setOpenWishlist={setOpenWishlist} />}
+
+      {/* Custom Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-slideInLeft {
+          animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Custom Scrollbar for Mobile Sidebar */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #cbd5e0;
+          border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: #a0aec0;
+        }
+      `}</style>
     </>
   );
 };
