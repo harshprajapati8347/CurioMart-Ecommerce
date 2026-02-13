@@ -617,18 +617,16 @@ export const footerProductLinks = [
   {
     name: "Reviews",
   },
-];
-
-export const footercompanyLinks = [
   {
     name: "Events",
     link: "/events",
   },
-];
-
-export const footerSupportLinks = [
   {
     name: "FAQ",
     link: "/faq",
   },
 ];
+
+export const footercompanyLinks = [];
+
+export const footerSupportLinks = [];
