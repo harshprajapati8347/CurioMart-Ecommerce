@@ -18,8 +18,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
           script: |
             cd /home/ubuntu/curiomart/backend
-            git pull origin main
-            docker-compose -f docker-compose.prod.yml up -d --build
+            git pull
+            docker compose -f docker-compose.prod.yml up -d --build
