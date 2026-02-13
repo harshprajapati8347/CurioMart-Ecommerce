@@ -86,25 +86,43 @@ const Footer = () => {
               />
             </Link>
             <p className="text-gray-400 leading-relaxed mb-6 max-w-sm mx-auto sm:mx-0">
-              Your one-stop destination for quality products. We bring you the
-              best deals and exceptional customer service.
+              Your trusted online store for quality products at the best prices.
+              Shop with confidence and enjoy fast delivery and reliable support.
             </p>
 
             {/* Contact Info */}
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center sm:justify-start">
                 <MdLocationOn className="text-blue-500 text-xl flex-shrink-0" />
-                <span className="text-sm">
-                  123 Market Street, Mumbai, India
+                <span
+                  className="text-sm"
+                  onClick={() => window.open("https://www.iamharsh.in")}
+                  style={{ cursor: "pointer" }}
+                >
+                  Surat, Gujarat, India
                 </span>
               </div>
               <div className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center sm:justify-start">
                 <MdPhone className="text-green-500 text-xl flex-shrink-0" />
-                <span className="text-sm">+91 98765 43210</span>
+                <span
+                  className="text-sm"
+                  onClick={() => window.open("tel:+919023822895")}
+                  style={{ cursor: "pointer" }}
+                >
+                  +91 9023822895
+                </span>
               </div>
               <div className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center sm:justify-start">
                 <MdEmail className="text-yellow-500 text-xl flex-shrink-0" />
-                <span className="text-sm">support@curiomart.com</span>
+                <span
+                  className="text-sm"
+                  onClick={() =>
+                    window.open("mailto:harshprajapati0123@gmail.com")
+                  }
+                  style={{ cursor: "pointer" }}
+                >
+                  harshprajapati0123@gmail.com
+                </span>
               </div>
             </div>
 
@@ -214,35 +232,27 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
             <p className="text-gray-400 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} CurioMart by Harsh. All rights
-              reserved.
+              © {new Date().getFullYear()} CurioMart by{" "}
+              <a
+                href="https://www.iamharsh.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-400 transition-colors"
+              >
+                Harsh
+              </a>
+              . All rights reserved.
             </p>
 
             {/* Legal Links */}
             <div className="flex items-center gap-4 text-sm">
-              <Link
-                to="/terms"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link className="text-gray-400 hover:text-white transition-colors">
                 Terms of Service
               </Link>
               <span className="text-gray-600">·</span>
-              <Link
-                to="/privacy"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link className="text-gray-400 hover:text-white transition-colors">
                 Privacy Policy
               </Link>
-            </div>
-
-            {/* Payment Methods */}
-            <div className="flex items-center gap-2">
-              <span className="text-gray-400 text-sm mr-2">We Accept:</span>
-              <img
-                src="https://hamart-shop.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffooter-payment.a37c49ac.png&w=640&q=75"
-                alt="Payment Methods"
-                className="h-6 md:h-8 opacity-80 hover:opacity-100 transition-opacity"
-              />
             </div>
           </div>
         </div>
