@@ -1,31 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-ZBHGMH16NT"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-ZBHGMH16NT");
-    </script>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="CurioMart - Your trusted online store for quality products at the best prices"
     />
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
     <title>CurioMart</title>
+
+    <!-- Consent Mode - MUST be FIRST -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      // Default consent DENIED
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+        functionality_storage: "granted",
+        personalization_storage: "denied",
+        security_storage: "granted",
+        wait_for_update: 2000,
+      });
+
+      // Restore saved consent
+      (function () {
+        try {
+          var saved = localStorage.getItem("cookie_consent_preferences");
+          if (saved) {
+            var c = JSON.parse(saved);
+            gtag("consent", "update", {
+              ad_storage: c.marketing ? "granted" : "denied",
+              ad_user_data: c.marketing ? "granted" : "denied",
+              ad_personalization: c.marketing ? "granted" : "denied",
+              analytics_storage: c.analytics ? "granted" : "denied",
+              personalization_storage: c.analytics ? "granted" : "denied",
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -46,8 +70,6 @@
     <div id="root"></div>
 
     <!-- Google Tag Manager (noscript) -->
-    <script type="module" src="./src/index.jsx"></script>
-
     <noscript
       ><iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-K9SPM3C3"
@@ -56,6 +78,7 @@
         style="display: none; visibility: hidden"
       ></iframe
     ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+
+    <script type="module" src="./src/index.jsx"></script>
   </body>
 </html>

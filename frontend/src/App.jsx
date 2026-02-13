@@ -65,6 +65,8 @@ import axios from "axios";
 import { server } from "./server";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import CookieBanner from "./components/CookieConsent/CookieBanner";
+import { initializeDefaultConsent } from "./utils/cookieConsent";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -76,6 +78,7 @@ const App = () => {
     setStripeApiKey(data.stripeApikey);
   }
   useEffect(() => {
+    initializeDefaultConsent();
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
@@ -341,6 +344,7 @@ const App = () => {
         pauseOnHover
         theme="dark"
       />
+      <CookieBanner />
     </BrowserRouter>
   );
 };

@@ -253,6 +253,15 @@ const Footer = () => {
               <Link className="text-gray-400 hover:text-white transition-colors">
                 Privacy Policy
               </Link>
+              <span className="text-gray-600">·</span>
+              <button
+                onClick={() =>
+                  window.openCookieSettings && window.openCookieSettings()
+                }
+                className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+              >
+                Cookie Settings
+              </button>
             </div>
           </div>
         </div>
