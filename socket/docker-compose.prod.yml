@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce_socket_prod
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - /etc/curiomart-socket.env
+    environment:
+      NODE_ENV: production
+    command: npm start
