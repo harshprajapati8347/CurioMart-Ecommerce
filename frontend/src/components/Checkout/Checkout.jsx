@@ -26,7 +26,7 @@ const Checkout = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const paymentSubmit = () => {
+  const paymentSubmit = async () => {
     if (
       address1 === "" ||
       address2 === "" ||
@@ -45,24 +45,38 @@ const Checkout = () => {
       };
 
       const orderData = {
-        cart,
-        totalPrice,
-        subTotalPrice,
-        shipping,
-        discountPrice,
+        cart: cart.map(item => ({ _id: item._id, qty: item.qty, shopId: item.shopId })),
         shippingAddress,
         user,
+        couponCode: couponCodeData ? couponCodeData.name : undefined,
       };
 
-      // update local storage with the updated orders array
-      localStorage.setItem("latestOrder", JSON.stringify(orderData));
-      navigate("/payment");
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        const { data } = await axios.post(
+          `${server}/order/create-order`,
+          orderData,
+          config
+        );
+
+        if (data.success) {
+          // Pass the client_secret and orders to the payment page
+          navigate("/payment", { state: { client_secret: data.client_secret, orders: data.orders } });
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Something went wrong while creating order.");
+      }
     }
   };
 
   const subTotalPrice = cart.reduce(
     (acc, item) => acc + item.qty * item.discountPrice,
-    0
+    0,
   );
 
   // this is shipping cost variable
@@ -74,7 +88,7 @@ const Checkout = () => {
 
     await axios
       .get(
-        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/get-coupon-value/${name}`
+        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/get-coupon-value/${name}`,
       )
       .then((res) => {
         const shopId = res.data.couponCode?.shopId;
@@ -89,7 +103,7 @@ const Checkout = () => {
           } else {
             const eligiblePrice = isCouponValid.reduce(
               (acc, item) => acc + item.qty * item.discountPrice,
-              0
+              0,
             );
             const discountPrice = (eligiblePrice * couponCodeValue) / 100;
             setDiscountPrice(discountPrice);
@@ -346,7 +360,7 @@ const CartData = ({
         <input
           type="text"
           className={`${styles.input} h-[40px] pl-2`}
-          placeholder="Coupoun code"
+          placeholder="Coupon code"
           value={couponCode}
           onChange={(e) => setCouponCode(e.target.value)}
           required

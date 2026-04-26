@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 
+require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
+
 app.use(
   cors({
     origin: [
@@ -16,8 +18,11 @@ app.use(
       "https://curiomart.iamharsh.in",
     ],
     credentials: true,
-  })
+  }),
 );
+
+const webhook = require("./controller/webhook");
+app.use("/api/v2/webhook", webhook);
 
 app.use(express.json());
 app.use(cookieParser());

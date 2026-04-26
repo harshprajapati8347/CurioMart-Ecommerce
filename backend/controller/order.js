@@ -6,15 +6,42 @@ const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
 const Product = require("../model/product");
+const CoupounCode = require("../model/coupounCode");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const { z } = require("zod");
+
+const orderSchema = z.object({
+  cart: z.array(
+    z.object({
+      _id: z.string(),
+      qty: z.number().min(1),
+      shopId: z.string()
+    })
+  ).min(1),
+  shippingAddress: z.object({
+    address1: z.string().min(1),
+    address2: z.string().optional(),
+    zipCode: z.number().or(z.string()),
+    country: z.string().min(1),
+    city: z.string().min(1)
+  }),
+  user: z.object({
+    _id: z.string().optional(),
+    name: z.string().optional(),
+    email: z.string().email().optional(),
+    phoneNumber: z.number().or(z.string()).optional()
+  }).passthrough(),
+  couponCode: z.string().optional()
+});
 
 // create new order
 router.post(
   "/create-order",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
+      const validatedData = orderSchema.parse(req.body);
+      const { cart, shippingAddress, user, couponCode } = validatedData;
 
-      //   group cart items by shopId
       const shopItemsMap = new Map();
 
       for (const item of cart) {
@@ -25,25 +52,81 @@ router.post(
         shopItemsMap.get(shopId).push(item);
       }
 
-      // create an order for each shop
-      const orders = [];
+      const ordersToCreate = [];
+      let totalAmountDue = 0;
 
       for (const [shopId, items] of shopItemsMap) {
-        const order = await Order.create({
-          cart: items,
+        let shopSubTotal = 0;
+        let finalCartItems = [];
+
+        for (const item of items) {
+          const product = await Product.findById(item._id);
+          if (!product) {
+            return next(new ErrorHandler("Product not found", 404));
+          }
+          if (product.stock < item.qty) {
+            return next(new ErrorHandler(`Insufficient stock for ${product.name}`, 400));
+          }
+          const itemTotal = product.discountPrice * item.qty;
+          shopSubTotal += itemTotal;
+          finalCartItems.push({
+            ...product.toObject(),
+            qty: item.qty,
+            discountPrice: product.discountPrice
+          });
+        }
+
+        const shipping = shopSubTotal * 0.10;
+        let discountPrice = 0;
+
+        if (couponCode) {
+          const validCoupon = await CoupounCode.findOne({ name: couponCode, shopId });
+          if (validCoupon) {
+            discountPrice = (shopSubTotal * validCoupon.value) / 100;
+          }
+        }
+
+        const shopTotalPrice = shopSubTotal + shipping - discountPrice;
+        totalAmountDue += shopTotalPrice;
+
+        ordersToCreate.push({
+          shopId,
+          cart: finalCartItems,
           shippingAddress,
           user,
-          totalPrice,
-          paymentInfo,
+          totalPrice: parseFloat(shopTotalPrice.toFixed(2)),
+          status: "Pending",
+          paymentStatus: "INITIATED"
         });
-        orders.push(order);
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(totalAmountDue * 100),
+        currency: "inr",
+        metadata: {
+          company: "CurioMart",
+        },
+      });
+
+      const createdOrders = [];
+      for (const orderData of ordersToCreate) {
+        const order = await Order.create({
+          ...orderData,
+          stripePaymentIntentId: paymentIntent.id
+        });
+        createdOrders.push(order);
       }
 
       res.status(201).json({
         success: true,
-        orders,
+        client_secret: paymentIntent.client_secret,
+        orders: createdOrders,
       });
+
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return next(new ErrorHandler(error.errors.map(e => e.message).join(", "), 400));
+      }
       return next(new ErrorHandler(error.message, 500));
     }
   })

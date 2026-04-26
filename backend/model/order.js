@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
     },
     status:{
         type: String,
-        default: "Processing",
+        default: "Pending",
     },
     paymentInfo:{
         id:{
@@ -31,6 +31,18 @@ const orderSchema = new mongoose.Schema({
         type:{
             type: String,
         },
+    },
+    stripePaymentIntentId: {
+        type: String,
+        index: true,
+    },
+    paymentId: {
+        type: String,
+    },
+    paymentStatus: {
+        type: String,
+        enum: ["INITIATED", "PAID", "FAILED", "REFUNDED"],
+        default: "INITIATED",
     },
     paidAt:{
         type: Date,
