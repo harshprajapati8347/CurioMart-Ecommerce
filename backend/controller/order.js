@@ -103,6 +103,7 @@ router.post(
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(totalAmountDue * 100),
         currency: "inr",
+        description: "Payment for CurioMart orders",
         metadata: {
           company: "CurioMart",
         },

@@ -10,6 +10,7 @@ router.post(
     const myPayment = await stripe.paymentIntents.create({
       amount: req.body.amount,
       currency: "inr",
+      description: "Payment for CurioMart orders",
       metadata: {
         company: "CurioMart",
       },
@@ -18,15 +19,14 @@ router.post(
       success: true,
       client_secret: myPayment.client_secret,
     });
-  })
+  }),
 );
 
 router.get(
   "/stripeapikey",
   catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({ stripeApikey: process.env.STRIPE_API_KEY });
-  })
+  }),
 );
-
 
 module.exports = router;
