@@ -1,10 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "lib": ["dom", "esnext"],
-    "jsx": "react-jsx",
-    "allowJs": true
-  },
-  "include": ["src/**/*"]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Header from "../components/Layout/Header";
 import Footer from "../components/Layout/Footer";
-import Lottie from "react-lottie";
+import Lottie from "lottie-react";
 import animationData from "../Assests/animations/107043-success.json";
 import { FiCheckCircle, FiPackage, FiTruck, FiHome } from "react-icons/fi";
 import { server } from "../server";

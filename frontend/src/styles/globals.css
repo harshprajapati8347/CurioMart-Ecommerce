@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* E-commerce Brand Palette — Slate/Zinc neutrals, Indigo accent */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 238 84% 60%;        /* Indigo-500 — primary CTA, links */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;      /* Surface for secondary buttons, chips */
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 220 14% 96%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;      /* Error/delete states */
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;        /* Order confirmed, payment success */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;         /* Low stock, pending state */
+    --warning-foreground: 0 0% 0%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 238 84% 60%;           /* Focus ring = primary */
+
+    --radius: 0.5rem;
+
+    /* E-commerce specific tokens */
+    --price-color: 238 84% 60%;
+    --discount-color: 0 84% 60%;
+    --rating-color: 38 92% 50%;
+    --badge-new: 142 71% 45%;
+    --badge-sale: 0 84% 60%;
+    --badge-hot: 38 92% 50%;
+  }
+
+  .dark {
+    --background: 222 47% 5%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 7%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 7%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 238 84% 67%;
+    --primary-foreground: 222 47% 5%;
+    --secondary: 222 47% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 47% 12%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 222 47% 12%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 55%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    --border: 222 47% 15%;
+    --input: 222 47% 15%;
+    --ring: 238 84% 67%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

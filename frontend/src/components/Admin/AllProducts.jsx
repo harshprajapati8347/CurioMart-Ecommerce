@@ -1,15 +1,8 @@
-import { Button } from "@material-ui/core";
-import { DataGrid } from "@material-ui/data-grid";
-import React, { useEffect } from "react";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { getAllProductsShop } from "../../redux/actions/product";
-import { deleteProduct } from "../../redux/actions/product";
-import Loader from "../Layout/Loader";
 import axios from "axios";
-import { server } from "../../server";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const AllProducts = () => {
   const [data, setData] = useState([]);
@@ -27,81 +20,48 @@ const AllProducts = () => {
       });
   }, []);
 
-  const columns = [
-    { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
-    {
-      field: "name",
-      headerName: "Name",
-      minWidth: 180,
-      flex: 1.4,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      minWidth: 100,
-      flex: 0.6,
-    },
-    {
-      field: "Stock",
-      headerName: "Stock",
-      type: "number",
-      minWidth: 80,
-      flex: 0.5,
-    },
-
-    {
-      field: "sold",
-      headerName: "Sold out",
-      type: "number",
-      minWidth: 130,
-      flex: 0.6,
-    },
-    {
-      field: "Preview",
-      flex: 0.8,
-      minWidth: 100,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/product/${params.id}`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
-    },
-  ];
-
-  const row = [];
-
-  data &&
-    data.forEach((item) => {
-      row.push({
-        id: item._id,
-        name: item.name,
-        price: "IND₹ " + item.discountPrice,
-        Stock: item.stock,
-        sold: item?.sold_out,
-      });
-    });
-
   return (
-    <>
-      <div className="w-full mx-8 pt-1 mt-10 bg-white">
-        <DataGrid
-          rows={row}
-          columns={columns}
-          pageSize={10}
-          disableSelectionOnClick
-          autoHeight
-        />
+    <div className="w-full p-8 mt-4 bg-background">
+      <div className="rounded-md border bg-card">
+        <div className="relative w-full overflow-auto">
+          <table className="w-full caption-bottom text-sm">
+            <thead className="[&_tr]:border-b">
+              <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Product Id</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Price</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Stock</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Sold out</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></th>
+              </tr>
+            </thead>
+            <tbody className="[&_tr:last-child]:border-0">
+              {data && data.map((item) => (
+                <tr key={item._id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  <td className="p-4 align-middle">{item._id}</td>
+                  <td className="p-4 align-middle">{item.name}</td>
+                  <td className="p-4 align-middle">IND₹ {item.discountPrice}</td>
+                  <td className="p-4 align-middle">{item.stock}</td>
+                  <td className="p-4 align-middle">{item?.sold_out}</td>
+                  <td className="p-4 align-middle text-right">
+                    <Link to={`/product/${item._id}`}>
+                      <Button variant="ghost" size="icon">
+                        <AiOutlineEye size={20} />
+                      </Button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+              {(!data || data.length === 0) && (
+                <tr>
+                  <td colSpan={6} className="p-4 text-center text-muted-foreground">No products found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { getAllUsers } from "../../redux/actions/user";
-import { DataGrid } from "@material-ui/data-grid";
 import { AiOutlineDelete } from "react-icons/ai";
-import { Button } from "@material-ui/core";
-import styles from "../../styles/styles";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
-import { server } from "../../server";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 
 const AllUsers = () => {
   const dispatch = useDispatch();
@@ -28,109 +24,78 @@ const AllUsers = () => {
       })
       .then((res) => {
         toast.success(res.data.message);
+      })
+      .catch((err) => {
+         toast.error(err.response?.data?.message || "Error deleting user");
       });
 
     dispatch(getAllUsers());
   };
 
-  const columns = [
-    { field: "id", headerName: "User ID", minWidth: 150, flex: 0.7 },
-
-    {
-      field: "name",
-      headerName: "name",
-      minWidth: 130,
-      flex: 0.7,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      type: "text",
-      minWidth: 130,
-      flex: 0.7,
-    },
-    {
-      field: "role",
-      headerName: "User Role",
-      type: "text",
-      minWidth: 130,
-      flex: 0.7,
-    },
-
-    {
-      field: "joinedAt",
-      headerName: "joinedAt",
-      type: "text",
-      minWidth: 130,
-      flex: 0.8,
-    },
-
-    {
-      field: " ",
-      flex: 1,
-      minWidth: 150,
-      headerName: "Delete User",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Button onClick={() => setUserId(params.id) || setOpen(true)}>
-              <AiOutlineDelete size={20} />
-            </Button>
-          </>
-        );
-      },
-    },
-  ];
-
-  const row = [];
-  users &&
-    users.forEach((item) => {
-      row.push({
-        id: item._id,
-        name: item.name,
-        email: item.email,
-        role: item.role,
-        joinedAt: item.createdAt.slice(0, 10),
-      });
-    });
-
   return (
     <div className="w-full flex justify-center pt-5">
       <div className="w-[97%]">
-        <h3 className="text-[22px] font-Poppins pb-2">All Users</h3>
-        <div className="w-full min-h-[45vh] bg-white rounded">
-          <DataGrid
-            rows={row}
-            columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
-            autoHeight
-          />
+        <h3 className="text-[22px] font-semibold pb-2 text-foreground">All Users</h3>
+        <div className="w-full min-h-[45vh] bg-card rounded-md border border-border shadow-sm overflow-hidden">
+            <div className="relative w-full overflow-auto">
+              <table className="w-full caption-bottom text-sm">
+                <thead className="[&_tr]:border-b border-border">
+                  <tr className="border-b border-border transition-colors hover:bg-muted/50">
+                    <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">User ID</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Email</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">User Role</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Joined At</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="[&_tr:last-child]:border-0">
+                  {users && users.map((item) => (
+                    <tr key={item._id} className="border-b border-border transition-colors hover:bg-muted/50">
+                      <td className="p-4 align-middle">{item._id}</td>
+                      <td className="p-4 align-middle">{item.name}</td>
+                      <td className="p-4 align-middle">{item.email}</td>
+                      <td className="p-4 align-middle">{item.role}</td>
+                      <td className="p-4 align-middle">{item.createdAt.slice(0, 10)}</td>
+                      <td className="p-4 align-middle">
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => { setUserId(item._id); setOpen(true); }}
+                          >
+                            <AiOutlineDelete size={20} />
+                          </Button>
+                      </td>
+                    </tr>
+                  ))}
+                  {(!users || users.length === 0) && (
+                    <tr>
+                      <td colSpan={6} className="h-24 text-center text-muted-foreground">
+                        No users found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
         </div>
         {open && (
-          <div className="w-full fixed top-0 left-0 z-[999] bg-[#00000039] flex items-center justify-center h-screen">
-            <div className="w-[95%] 800px:w-[40%] min-h-[20vh] bg-white rounded shadow p-5">
-              <div className="w-full flex justify-end cursor-pointer">
+          <div className="w-full fixed top-0 left-0 z-[999] bg-black/50 flex items-center justify-center h-screen animate-in fade-in duration-200">
+            <div className="w-[95%] 800px:w-[40%] min-h-[20vh] bg-card rounded-xl border border-border shadow-lg p-6">
+              <div className="w-full flex justify-end cursor-pointer text-muted-foreground hover:text-foreground">
                 <RxCross1 size={25} onClick={() => setOpen(false)} />
               </div>
-              <h3 className="text-[25px] text-center py-5 font-Poppins text-[#000000cb]">
+              <h3 className="text-xl text-center py-5 font-semibold text-foreground">
                 Are you sure you wanna delete this user?
               </h3>
-              <div className="w-full flex items-center justify-center">
-                <div
-                  className={`${styles.button} text-white text-[18px] !h-[42px] mr-4`}
-                  onClick={() => setOpen(false)}
-                >
-                  cancel
-                </div>
-                <div
-                  className={`${styles.button} text-white text-[18px] !h-[42px] ml-4`}
-                  onClick={() => setOpen(false) || handleDelete(userId)}
-                >
-                  confirm
-                </div>
+              <div className="w-full flex items-center justify-center gap-4 mt-4">
+                <Button variant="outline" size="lg" onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="destructive" size="lg" onClick={() => { setOpen(false); handleDelete(userId); }}>
+                  Confirm
+                </Button>
               </div>
             </div>
           </div>

@@ -14,13 +14,13 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
       "https://curiomart.vercel.app",
       "https://curiomart.iamharsh.in",
     ],
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
     if (messages[senderId]) {
       const message = messages[senderId].find(
         (message) =>
-          message.receiverId === receiverId && message.id === messageId
+          message.receiverId === receiverId && message.id === messageId,
       );
       if (message) {
         message.seen = true;

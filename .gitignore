@@ -3,6 +3,8 @@ backend/config/.env
 frontend/node_modules
 frontend/build
 frontend/dist
+frontend/.env
+socket/.env
 backend/node_modules
 socket/node_modules
 

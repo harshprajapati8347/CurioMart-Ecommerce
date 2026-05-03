@@ -6,7 +6,6 @@
   "engines": {
     "node": ">=18.10.0"
   },
-  "proxy": "http://localhost:3000",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",

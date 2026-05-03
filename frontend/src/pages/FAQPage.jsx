@@ -316,8 +316,8 @@ const Faq = () => {
           {activeTab === 7 && (
             <div className="mt-4">
               <p className="text-base text-gray-500">
-                We accept visa,mastercard,paypal payment method also we have
-                cash on delivery system.
+                We accept Credit and Debit Cards, UPI payment method also we
+                have cash on delivery system.
               </p>
             </div>
           )}

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import AdminHeader from "../components/Layout/AdminHeader";
 import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
-import { DataGrid } from "@material-ui/data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";
+import { Badge } from "@/components/ui/badge";
 
 const AdminDashboardOrders = () => {
   const dispatch = useDispatch();
@@ -14,57 +14,8 @@ const AdminDashboardOrders = () => {
 
   useEffect(() => {
     dispatch(getAllOrdersOfAdmin());
-  }, []);
+  }, [dispatch]);
 
-  const columns = [
-    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
-
-    {
-      field: "status",
-      headerName: "Status",
-      minWidth: 130,
-      flex: 0.7,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
-      },
-    },
-    {
-      field: "itemsQty",
-      headerName: "Items Qty",
-      type: "number",
-      minWidth: 130,
-      flex: 0.7,
-    },
-
-    {
-      field: "total",
-      headerName: "Total",
-      type: "number",
-      minWidth: 130,
-      flex: 0.8,
-    },
-    {
-      field: "createdAt",
-      headerName: "Order Date",
-      type: "number",
-      minWidth: 130,
-      flex: 0.8,
-    },
-  ];
-
-  const row = [];
-  adminOrders &&
-    adminOrders.forEach((item) => {
-      row.push({
-        id: item._id,
-        itemsQty: item?.cart?.reduce((acc, item) => acc + item.qty, 0),
-        total: item?.totalPrice + " ₹",
-        status: item?.status,
-        createdAt: item?.createdAt.slice(0, 10),
-      });
-    });
   return (
     <div>
       <AdminHeader />
@@ -75,14 +26,43 @@ const AdminDashboardOrders = () => {
           </div>
 
           <div className="w-full min-h-[45vh] pt-5 rounded flex justify-center">
-            <div className="w-[97%] flex justify-center">
-              <DataGrid
-                rows={row}
-                columns={columns}
-                pageSize={4}
-                disableSelectionOnClick
-                autoHeight
-              />
+            <div className="w-[97%] flex flex-col mt-4">
+              <h3 className="text-xl font-bold tracking-tight mb-4">All Orders</h3>
+              <div className="rounded-md border bg-card">
+                <div className="relative w-full overflow-auto">
+                  <table className="w-full caption-bottom text-sm">
+                    <thead className="[&_tr]:border-b">
+                      <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Order ID</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Items Qty</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Total</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Order Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="[&_tr:last-child]:border-0">
+                      {adminOrders && adminOrders.map((item) => (
+                        <tr key={item._id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <td className="p-4 align-middle">{item._id}</td>
+                          <td className="p-4 align-middle">
+                            <Badge variant={item.status === "Delivered" ? "success" : "default"} className={item.status === "Delivered" ? "bg-success text-success-foreground" : "bg-primary"}>
+                              {item.status}
+                            </Badge>
+                          </td>
+                          <td className="p-4 align-middle">{item.cart?.reduce((acc, cartItem) => acc + cartItem.qty, 0)}</td>
+                          <td className="p-4 align-middle">₹ {item.totalPrice}</td>
+                          <td className="p-4 align-middle">{item.createdAt.slice(0, 10)}</td>
+                        </tr>
+                      ))}
+                      {(!adminOrders || adminOrders.length === 0) && !adminOrderLoading && (
+                        <tr>
+                          <td colSpan={5} className="p-4 text-center text-muted-foreground">No orders found.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>

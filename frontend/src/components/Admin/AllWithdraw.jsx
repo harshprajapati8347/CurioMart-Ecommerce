@@ -1,12 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { server } from "../../server";
-import { Link } from "react-router-dom";
-import { DataGrid } from "@material-ui/data-grid";
 import { BsPencil } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
-import styles from "../../styles/styles";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 
 const AllWithdraw = () => {
   const [data, setData] = useState([]);
@@ -16,14 +13,9 @@ const AllWithdraw = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `${
-          import.meta.env.VITE_APP_SERVER_URL
-        }/withdraw/get-all-withdraw-request`,
-        {
-          withCredentials: true,
-        }
-      )
+      .get(`${import.meta.env.VITE_APP_SERVER_URL}/withdraw/get-all-withdraw-request`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setData(res.data.withdraws);
       })
@@ -32,68 +24,12 @@ const AllWithdraw = () => {
       });
   }, []);
 
-  const columns = [
-    { field: "id", headerName: "Withdraw Id", minWidth: 150, flex: 0.7 },
-    {
-      field: "name",
-      headerName: "Shop Name",
-      minWidth: 180,
-      flex: 1.4,
-    },
-    {
-      field: "shopId",
-      headerName: "Shop Id",
-      minWidth: 180,
-      flex: 1.4,
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      minWidth: 100,
-      flex: 0.6,
-    },
-    {
-      field: "status",
-      headerName: "status",
-      type: "text",
-      minWidth: 80,
-      flex: 0.5,
-    },
-    {
-      field: "createdAt",
-      headerName: "Request given at",
-      type: "number",
-      minWidth: 130,
-      flex: 0.6,
-    },
-    {
-      field: " ",
-      headerName: "Update Status",
-      type: "number",
-      minWidth: 130,
-      flex: 0.6,
-      renderCell: (params) => {
-        return (
-          <BsPencil
-            size={20}
-            className={`${
-              params.row.status !== "Processing" ? "hidden" : ""
-            } mr-5 cursor-pointer`}
-            onClick={() => setOpen(true) || setWithdrawData(params.row)}
-          />
-        );
-      },
-    },
-  ];
-
   const handleSubmit = async () => {
     await axios
       .put(
-        `${
-          import.meta.env.VITE_APP_SERVER_URL
-        }/withdraw/update-withdraw-request/${withdrawData.id}`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/withdraw/update-withdraw-request/${withdrawData._id}`,
         {
-          sellerId: withdrawData.shopId,
+          sellerId: withdrawData.seller._id,
         },
         { withCredentials: true }
       )
@@ -101,59 +37,86 @@ const AllWithdraw = () => {
         toast.success("Withdraw request updated successfully!");
         setData(res.data.withdraws);
         setOpen(false);
+      })
+      .catch((err) => {
+        toast.error(err.response?.data?.message || "Failed to update status");
       });
   };
 
-  const row = [];
-
-  data &&
-    data.forEach((item) => {
-      row.push({
-        id: item._id,
-        shopId: item.seller._id,
-        name: item.seller.name,
-        amount: "IND₹ " + item.amount,
-        status: item.status,
-        createdAt: item.createdAt.slice(0, 10),
-      });
-    });
   return (
-    <div className="w-full flex items-center pt-5 justify-center">
-      <div className="w-[95%] bg-white">
-        <DataGrid
-          rows={row}
-          columns={columns}
-          pageSize={10}
-          disableSelectionOnClick
-          autoHeight
-        />
+    <div className="w-full flex justify-center pt-5">
+      <div className="w-[97%]">
+        <h3 className="text-[22px] font-semibold pb-2 text-foreground">Withdraw Requests</h3>
+        <div className="w-full min-h-[45vh] bg-card rounded-md border border-border shadow-sm overflow-hidden">
+          <div className="relative w-full overflow-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead className="[&_tr]:border-b border-border">
+                <tr className="border-b border-border transition-colors hover:bg-muted/50">
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Withdraw Id</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Shop Name</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Shop Id</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Amount</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Requested At</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="[&_tr:last-child]:border-0">
+                {data && data.map((item) => (
+                  <tr key={item._id} className="border-b border-border transition-colors hover:bg-muted/50">
+                    <td className="p-4 align-middle">{item._id}</td>
+                    <td className="p-4 align-middle">{item.seller.name}</td>
+                    <td className="p-4 align-middle">{item.seller._id}</td>
+                    <td className="p-4 align-middle">IND₹ {item.amount}</td>
+                    <td className="p-4 align-middle">{item.status}</td>
+                    <td className="p-4 align-middle">{item.createdAt.slice(0, 10)}</td>
+                    <td className="p-4 align-middle">
+                      {item.status === "Processing" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => { setWithdrawData(item); setOpen(true); }}
+                          className="h-8 w-8 text-primary"
+                        >
+                          <BsPencil size={18} />
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {(!data || data.length === 0) && (
+                  <tr>
+                    <td colSpan={7} className="h-24 text-center text-muted-foreground">
+                      No withdraw requests found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       {open && (
-        <div className="w-full fixed h-screen top-0 left-0 bg-[#00000031] z-[9999] flex items-center justify-center">
-          <div className="w-[50%] min-h-[40vh] bg-white rounded shadow p-4">
-            <div className="flex justify-end w-full">
+        <div className="w-full fixed h-screen top-0 left-0 bg-black/50 z-[9999] flex items-center justify-center animate-in fade-in duration-200">
+          <div className="w-[50%] min-h-[40vh] bg-card rounded-xl border border-border shadow-lg p-6">
+            <div className="flex justify-end w-full text-muted-foreground hover:text-foreground cursor-pointer">
               <RxCross1 size={25} onClick={() => setOpen(false)} />
             </div>
-            <h1 className="text-[25px] text-center font-Poppins">
-              Update Withdraw status
+            <h1 className="text-2xl text-center font-semibold text-foreground mb-6">
+              Update Withdraw Status
             </h1>
-            <br />
-            <select
-              name=""
-              id=""
-              onChange={(e) => setWithdrawStatus(e.target.value)}
-              className="w-[200px] h-[35px] border rounded"
-            >
-              <option value={withdrawStatus}>{withdrawData.status}</option>
-              <option value={withdrawStatus}>Succeed</option>
-            </select>
-            <button
-              type="submit"
-              className={`block ${styles.button} text-white !h-[42px] mt-4 text-[18px]`}
-              onClick={handleSubmit}
-            >
-              Update
-            </button>
+            <div className="flex flex-col gap-4">
+              <select
+                onChange={(e) => setWithdrawStatus(e.target.value)}
+                className="w-full h-12 px-4 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+              >
+                <option value="Processing">Processing</option>
+                <option value="Succeed">Succeed</option>
+              </select>
+              <Button size="lg" className="w-full mt-4" onClick={handleSubmit}>
+                Update
+              </Button>
+            </div>
           </div>
         </div>
       )}

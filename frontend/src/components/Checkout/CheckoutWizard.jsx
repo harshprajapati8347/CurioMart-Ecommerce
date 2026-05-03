@@ -6,8 +6,38 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { usePaymentIntent } from "../../hooks/usePaymentIntent";
-import { FiCheck, FiChevronDown, FiChevronUp, FiShield } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiShield } from "react-icons/fi";
+import { OrderStepper } from "@/components/ui/order-stepper";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input"; // Assuming standard shadcn input
+
+// Quick Mock for Input if it doesn't exist
+const FormInput = ({ label, ...props }) => (
+  <div className="space-y-2">
+    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+      {label}
+    </label>
+    <input
+      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      {...props}
+    />
+  </div>
+);
+
+const FormSelect = ({ label, children, ...props }) => (
+  <div className="space-y-2">
+    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+      {label}
+    </label>
+    <select
+      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      {...props}
+    >
+      {children}
+    </select>
+  </div>
+);
 
 let stripePromise;
 const getStripe = async () => {
@@ -22,99 +52,74 @@ const getStripe = async () => {
   return stripePromise;
 };
 
-const StepIndicator = ({ currentStep }) => {
-  const steps = ["Delivery", "Review", "Payment"];
-  return (
-    <div className="flex items-center justify-center w-full mb-8 sticky top-0 bg-white/80 backdrop-blur-md z-10 py-4 border-b">
-      {steps.map((step, index) => (
-        <React.Fragment key={step}>
-          <div className="flex flex-col items-center">
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors duration-300 ${
-                currentStep > index + 1
-                  ? "bg-green-500 text-white"
-                  : currentStep === index + 1
-                  ? "bg-[#f63b60] text-white"
-                  : "bg-gray-200 text-gray-500"
-              }`}
-            >
-              {currentStep > index + 1 ? <FiCheck size={20} /> : index + 1}
-            </div>
-            <span className={`text-sm mt-2 font-medium ${currentStep >= index + 1 ? "text-gray-900" : "text-gray-400"}`}>
-              {step}
-            </span>
-          </div>
-          {index < steps.length - 1 && (
-            <div className={`h-1 w-16 md:w-32 mx-2 rounded transition-colors duration-300 ${currentStep > index + 1 ? "bg-green-500" : "bg-gray-200"}`} />
-          )}
-        </React.Fragment>
-      ))}
-    </div>
-  );
-};
-
 const OrderSummaryPanel = ({ cart, subtotal, shipping, discount, total, applyCoupon }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [couponInput, setCouponInput] = useState("");
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 sticky top-24">
+    <Card className="sticky top-24 border-0 lg:border shadow-none lg:shadow-sm">
       {/* Mobile Accordion Toggle */}
-      <div className="p-4 lg:hidden flex justify-between items-center cursor-pointer bg-gray-50 rounded-t-xl" onClick={() => setIsOpen(!isOpen)}>
-        <span className="font-semibold text-lg">Order Summary (₹{total})</span>
+      <div 
+        className="p-4 lg:hidden flex justify-between items-center cursor-pointer bg-muted/50 rounded-t-xl" 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="font-semibold text-lg text-foreground">Order Summary (IND₹{total})</span>
         {isOpen ? <FiChevronUp /> : <FiChevronDown />}
       </div>
 
-      <div className={`${isOpen ? 'block' : 'hidden'} lg:block p-6`}>
-        <h3 className="text-xl font-bold mb-4 hidden lg:block text-gray-800">Order Summary</h3>
-        <div className="max-h-60 overflow-y-auto pr-2 space-y-4 mb-6">
-          {cart.map((item) => (
-            <div key={item._id} className="flex items-center gap-4">
-              <img src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item?.images[0]}`} alt={item.name} className="w-16 h-16 object-cover rounded-md border" />
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
-                <p className="text-sm text-gray-500">Qty: {item.qty}</p>
-              </div>
-              <p className="text-sm font-semibold">₹{(item.discountPrice * item.qty).toFixed(2)}</p>
-            </div>
-          ))}
-        </div>
+      <div className={`${isOpen ? 'block' : 'hidden'} lg:block`}>
+        <CardHeader className="hidden lg:block bg-muted/30 border-b border-border">
+          <CardTitle className="text-lg">Order Summary</CardTitle>
+        </CardHeader>
         
-        <div className="border-t pt-4 space-y-2">
-          <div className="flex justify-between text-gray-600">
-            <span>Subtotal</span>
-            <span>₹{subtotal.toFixed(2)}</span>
+        <CardContent className="p-6">
+          <div className="max-h-60 overflow-y-auto pr-2 space-y-4 mb-6">
+            {cart.map((item) => (
+              <div key={item._id} className="flex items-center gap-4">
+                <img src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item?.images[0]}`} alt={item.name} className="w-16 h-16 object-cover rounded-md border border-border" />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-medium text-foreground truncate">{item.name}</h4>
+                  <p className="text-sm text-muted-foreground">Qty: {item.qty}</p>
+                </div>
+                <p className="text-sm font-semibold text-foreground">IND₹{(item.discountPrice * item.qty).toFixed(2)}</p>
+              </div>
+            ))}
           </div>
-          <div className="flex justify-between text-gray-600">
-            <span>Shipping</span>
-            <span>₹{shipping.toFixed(2)}</span>
-          </div>
-          {discount > 0 && (
-            <div className="flex justify-between text-green-600">
-              <span>Discount</span>
-              <span>-₹{discount.toFixed(2)}</span>
+          
+          <div className="border-t border-border pt-4 space-y-2">
+            <div className="flex justify-between text-muted-foreground">
+              <span>Subtotal</span>
+              <span className="text-foreground font-medium">IND₹{subtotal.toFixed(2)}</span>
             </div>
-          )}
-          <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t mt-2">
-            <span>Total</span>
-            <span>₹{total}</span>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Shipping</span>
+              <span className="text-foreground font-medium">IND₹{shipping.toFixed(2)}</span>
+            </div>
+            {discount > 0 && (
+              <div className="flex justify-between text-success">
+                <span>Discount</span>
+                <span className="font-medium">-IND₹{discount.toFixed(2)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-xl font-bold text-foreground pt-4 border-t border-border mt-4">
+              <span>Total</span>
+              <span>IND₹{total}</span>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-6">
-          <form onSubmit={(e) => { e.preventDefault(); applyCoupon(couponInput); }} className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Coupon code"
-              value={couponInput}
-              onChange={(e) => setCouponInput(e.target.value)}
-              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f63b60]"
-            />
-            <button type="submit" className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">Apply</button>
-          </form>
-        </div>
+          <div className="mt-6">
+            <form onSubmit={(e) => { e.preventDefault(); applyCoupon(couponInput); }} className="flex gap-2">
+              <FormInput
+                placeholder="Coupon code"
+                value={couponInput}
+                onChange={(e) => setCouponInput(e.target.value)}
+              />
+              <Button type="submit" variant="secondary">Apply</Button>
+            </form>
+          </div>
+        </CardContent>
       </div>
-    </div>
+    </Card>
   );
 };
 
@@ -129,100 +134,88 @@ const DeliveryStep = ({ shippingInfo, setShippingInfo, onNext }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 animate-fade-in">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Delivery Details</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-            <input required name="name" value={shippingInfo.name} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-            <input required type="email" name="email" value={shippingInfo.email} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-            <input required type="tel" name="phone" value={shippingInfo.phone} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
-            <select required name="country" value={shippingInfo.country} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow">
+    <Card className="animate-in fade-in duration-500">
+      <CardHeader>
+        <CardTitle className="text-2xl">Delivery Details</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormInput required label="Full Name *" name="name" value={shippingInfo.name} onChange={handleChange} />
+            <FormInput required type="email" label="Email *" name="email" value={shippingInfo.email} onChange={handleChange} />
+            <FormInput required type="tel" label="Phone Number *" name="phone" value={shippingInfo.phone} onChange={handleChange} />
+            
+            <FormSelect required label="Country *" name="country" value={shippingInfo.country} onChange={handleChange}>
               <option value="">Select Country</option>
               {Country.getAllCountries().map((c) => (
                 <option key={c.isoCode} value={c.isoCode}>{c.name}</option>
               ))}
-            </select>
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1 *</label>
-            <input required name="line1" value={shippingInfo.line1} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2 (Optional)</label>
-            <input name="line2" value={shippingInfo.line2} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">State / Province *</label>
-            <select required name="state" value={shippingInfo.state} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" disabled={!shippingInfo.country}>
+            </FormSelect>
+            
+            <div className="md:col-span-2">
+              <FormInput required label="Address Line 1 *" name="line1" value={shippingInfo.line1} onChange={handleChange} />
+            </div>
+            
+            <div className="md:col-span-2">
+              <FormInput label="Address Line 2 (Optional)" name="line2" value={shippingInfo.line2} onChange={handleChange} />
+            </div>
+            
+            <FormSelect required label="State / Province *" name="state" value={shippingInfo.state} onChange={handleChange} disabled={!shippingInfo.country}>
               <option value="">Select State</option>
               {shippingInfo.country && State.getStatesOfCountry(shippingInfo.country).map((s) => (
                 <option key={s.isoCode} value={s.isoCode}>{s.name}</option>
               ))}
-            </select>
+            </FormSelect>
+            
+            <FormInput required label="City *" name="city" value={shippingInfo.city} onChange={handleChange} />
+            <FormInput required label="Postal Code *" name="postalCode" value={shippingInfo.postalCode} onChange={handleChange} />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-            <input required name="city" value={shippingInfo.city} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code *</label>
-            <input required name="postalCode" value={shippingInfo.postalCode} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f63b60] outline-none transition-shadow" />
-          </div>
-        </div>
 
-        <div className="flex justify-end pt-6">
-          <button type="submit" className="px-8 py-3 bg-[#f63b60] text-white rounded-lg font-semibold hover:bg-[#d42d4a] transition-colors shadow-md hover:shadow-lg w-full md:w-auto">
-            Continue to Review
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex justify-end pt-6 border-t border-border mt-6">
+            <Button type="submit" size="lg" className="w-full md:w-auto">
+              Continue to Review
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
 const ReviewStep = ({ onBack, onNext, loading, shippingInfo }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 animate-fade-in">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Review Your Order</h2>
-      <p className="text-gray-600 mb-6">Please review your items and order summary on the right before proceeding to payment.</p>
-      
-      <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200 flex justify-between items-start">
-        <div>
-            <h3 className="font-semibold text-gray-800 mb-2">Delivery Information</h3>
-            <p className="text-sm text-gray-600">{shippingInfo.name}</p>
-            <p className="text-sm text-gray-600">{shippingInfo.line1} {shippingInfo.line2}</p>
-            <p className="text-sm text-gray-600">{shippingInfo.city}, {shippingInfo.state} {shippingInfo.postalCode}</p>
-            <p className="text-sm text-gray-600">{shippingInfo.country}</p>
-            <p className="text-sm text-gray-600">{shippingInfo.phone}</p>
+    <Card className="animate-in fade-in duration-500">
+      <CardHeader>
+        <CardTitle className="text-2xl">Review Your Order</CardTitle>
+        <p className="text-muted-foreground text-sm">Please review your items and order summary on the right before proceeding to payment.</p>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="bg-muted/30 rounded-lg p-6 border border-border flex flex-col md:flex-row justify-between items-start gap-4">
+          <div>
+            <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              Delivery Information
+            </h3>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p className="font-medium text-foreground">{shippingInfo.name}</p>
+              <p>{shippingInfo.line1} {shippingInfo.line2}</p>
+              <p>{shippingInfo.city}, {shippingInfo.state} {shippingInfo.postalCode}</p>
+              <p>{shippingInfo.country}</p>
+              <p>{shippingInfo.phone}</p>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" onClick={onBack}>Edit Details</Button>
         </div>
-        <button type="button" onClick={onBack} className="text-[#f63b60] text-sm font-medium hover:underline">Edit</button>
-      </div>
-
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-        <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+      </CardContent>
+      <CardFooter className="flex justify-between border-t border-border pt-6 mt-6">
+        <Button variant="ghost" onClick={onBack} disabled={loading}>
           Back
-        </button>
-        <button 
-          type="button" 
-          onClick={onNext} 
-          disabled={loading}
-          className="px-8 py-3 bg-[#f63b60] text-white rounded-lg font-semibold hover:bg-[#d42d4a] transition-colors shadow-md hover:shadow-lg disabled:opacity-50 flex items-center gap-2"
-        >
+        </Button>
+        <Button onClick={onNext} disabled={loading} size="lg">
           {loading ? "Processing..." : "Proceed to Payment"}
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
@@ -278,22 +271,18 @@ const PaymentForm = ({ shippingInfo, onBack }) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement />
       {errorMessage && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg text-sm border border-red-200">
+        <div className="p-4 bg-destructive/10 text-destructive rounded-lg text-sm border border-destructive/20">
           {errorMessage}
         </div>
       )}
-      <div className="flex justify-between items-center pt-6">
-        <button type="button" onClick={onBack} disabled={isProcessing} className="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+      <div className="flex justify-between items-center pt-6 border-t border-border">
+        <Button variant="ghost" type="button" onClick={onBack} disabled={isProcessing}>
           Back
-        </button>
-        <button 
-          type="submit" 
-          disabled={isProcessing || !stripe || !elements}
-          className="px-8 py-3 bg-[#f63b60] text-white rounded-lg font-semibold hover:bg-[#d42d4a] transition-colors shadow-md hover:shadow-lg disabled:opacity-50 flex items-center gap-2"
-        >
+        </Button>
+        <Button type="submit" disabled={isProcessing || !stripe || !elements} size="lg" className="gap-2">
           {isProcessing ? "Processing..." : "Pay Now"}
           <FiShield />
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -309,28 +298,32 @@ const PaymentStep = ({ clientSecret, shippingInfo, onBack }) => {
   const appearance = {
     theme: "stripe",
     variables: {
-      colorPrimary: "#f63b60",
-      colorBackground: "#ffffff",
-      colorText: "#333333",
-      colorDanger: "#ef4444",
-      fontFamily: "ui-sans-serif, system-ui, sans-serif",
-      borderRadius: "8px",
+      colorPrimary: "hsl(var(--primary))",
+      colorBackground: "hsl(var(--background))",
+      colorText: "hsl(var(--foreground))",
+      colorDanger: "hsl(var(--destructive))",
+      fontFamily: "var(--font-sans)",
+      borderRadius: "var(--radius)",
     },
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 animate-fade-in">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Secure Payment</h2>
-      {clientSecret && stripePromiseObj ? (
-        <Elements stripe={stripePromiseObj} options={{ clientSecret, appearance }}>
-          <PaymentForm shippingInfo={shippingInfo} onBack={onBack} />
-        </Elements>
-      ) : (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f63b60]"></div>
-        </div>
-      )}
-    </div>
+    <Card className="animate-in fade-in duration-500">
+      <CardHeader>
+        <CardTitle className="text-2xl">Secure Payment</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {clientSecret && stripePromiseObj ? (
+          <Elements stripe={stripePromiseObj} options={{ clientSecret, appearance }}>
+            <PaymentForm shippingInfo={shippingInfo} onBack={onBack} />
+          </Elements>
+        ) : (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
@@ -415,10 +408,19 @@ const CheckoutWizard = () => {
     }
   };
 
+  const checkoutSteps = [
+    { title: "Delivery" },
+    { title: "Review" },
+    { title: "Payment" }
+  ];
+
   return (
-    <div className="w-full bg-[#f6f9fc] min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-background min-h-[calc(100vh-80px)] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <StepIndicator currentStep={step} />
+        
+        <div className="mb-12">
+          <OrderStepper steps={checkoutSteps} currentStep={step} />
+        </div>
         
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full lg:w-[60%]">

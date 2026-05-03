@@ -1,13 +1,12 @@
-import { Button } from "@material-ui/core";
-import { DataGrid } from "@material-ui/data-grid";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { server } from "../../server";
+import { Button } from "@/components/ui/button";
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
+  
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_APP_SERVER_URL}/event/admin-all-events`, {
@@ -18,78 +17,52 @@ const AllEvents = () => {
       });
   }, []);
 
-  const columns = [
-    { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
-    {
-      field: "name",
-      headerName: "Name",
-      minWidth: 180,
-      flex: 1.4,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      minWidth: 100,
-      flex: 0.6,
-    },
-    {
-      field: "Stock",
-      headerName: "Stock",
-      type: "number",
-      minWidth: 80,
-      flex: 0.5,
-    },
-
-    {
-      field: "sold",
-      headerName: "Sold out",
-      type: "number",
-      minWidth: 130,
-      flex: 0.6,
-    },
-    {
-      field: "Preview",
-      flex: 0.8,
-      minWidth: 100,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/product/${params.id}?isEvent=true`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
-    },
-  ];
-
-  const row = [];
-
-  events &&
-    events.forEach((item) => {
-      row.push({
-        id: item._id,
-        name: item.name,
-        price: "IND₹ " + item.discountPrice,
-        Stock: item.stock,
-        sold: item.sold_out,
-      });
-    });
-
   return (
-    <div className="w-full mx-8 pt-1 mt-10 bg-white">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
+    <div className="w-full flex justify-center pt-5">
+      <div className="w-[97%]">
+        <h3 className="text-[22px] font-semibold pb-2 text-foreground">All Events</h3>
+        <div className="w-full min-h-[45vh] bg-card rounded-md border border-border shadow-sm overflow-hidden">
+          <div className="relative w-full overflow-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead className="[&_tr]:border-b border-border">
+                <tr className="border-b border-border transition-colors hover:bg-muted/50">
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Product Id</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Price</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Stock</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Sold out</th>
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Preview</th>
+                </tr>
+              </thead>
+              <tbody className="[&_tr:last-child]:border-0">
+                {events && events.map((item) => (
+                  <tr key={item._id} className="border-b border-border transition-colors hover:bg-muted/50">
+                    <td className="p-4 align-middle">{item._id}</td>
+                    <td className="p-4 align-middle">{item.name}</td>
+                    <td className="p-4 align-middle">IND₹ {item.discountPrice}</td>
+                    <td className="p-4 align-middle">{item.stock}</td>
+                    <td className="p-4 align-middle">{item.sold_out || 0}</td>
+                    <td className="p-4 align-middle">
+                      <Link to={`/product/${item._id}?isEvent=true`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary">
+                          <AiOutlineEye size={20} />
+                        </Button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+                {(!events || events.length === 0) && (
+                  <tr>
+                    <td colSpan={6} className="h-24 text-center text-muted-foreground">
+                      No events found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
