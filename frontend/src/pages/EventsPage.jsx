@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import EventCard from "../components/Events/EventCard";
-import Header from "../components/Layout/Header";
+import Navbar from "../components/Layout/Navbar";
 import Loader from "../components/Layout/Loader";
 import Footer from "../components/Layout/Footer";
 
@@ -14,7 +14,7 @@ const EventsPage = () => {
         <Loader />
       ) : (
         <div className="bg-gray-50 min-h-screen">
-          <Header activeHeading={4} />
+          <Navbar activeHeading={4} />
 
           {/* Hero Section */}
           <div className="w-full bg-gradient-to-r from-pink-500 to-yellow-500 text-white py-4 px-4 text-center shadow-md">

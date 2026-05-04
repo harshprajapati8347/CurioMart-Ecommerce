@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Header from "../components/Layout/Header";
+import Navbar from "../components/Layout/Navbar";
 import Footer from "../components/Layout/Footer";
 import Lottie from "lottie-react";
 import animationData from "../Assests/animations/107043-success.json";
@@ -61,7 +61,7 @@ const OrderSuccessPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f6f9fc] flex flex-col">
-        <Header />
+        <Navbar />
         <div className="flex-1 flex justify-center items-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#f63b60]"></div>
         </div>
@@ -73,7 +73,7 @@ const OrderSuccessPage = () => {
   if (error || orders.length === 0) {
     return (
       <div className="min-h-screen bg-[#f6f9fc] flex flex-col">
-        <Header />
+        <Navbar />
         <div className="flex-1 flex flex-col justify-center items-center p-6 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Oops! Order not found.
@@ -141,7 +141,7 @@ const OrderSuccessPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f6f9fc] flex flex-col">
-      <Header />
+      <Navbar />
       <div className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8">
         {/* 1. Success Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center mb-8 animate-fade-in relative overflow-hidden">

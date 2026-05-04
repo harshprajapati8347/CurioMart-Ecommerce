@@ -13,8 +13,8 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-// import { QuantityStepper } from "@/components/ui/quantity-stepper";
-// import { PriceDisplay } from "@/components/ui/price-display";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
+import { PriceDisplay } from "@/components/ui/price-display";
 
 const CartPageContent = () => {
   const { cart } = useSelector((state) => state.cart);
@@ -258,12 +258,12 @@ const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               <label className="text-sm font-medium text-muted-foreground block">
                 Quantity
               </label>
-              {/* <QuantityStepper
+              <QuantityStepper
                 value={value}
                 onChange={handleQuantityChange}
                 min={1}
                 max={data.stock}
-              /> */}
+              />
               {data.stock < 10 && (
                 <p className="text-xs font-medium text-destructive mt-1">
                   Only {data.stock} left in stock
@@ -273,13 +273,13 @@ const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
 
             <div className="text-right">
               <p className="text-sm text-muted-foreground mb-1">Total</p>
-              {/* <PriceDisplay
+              <PriceDisplay
                 price={data.discountPrice * value}
                 originalPrice={
                   data.originalPrice ? data.originalPrice * value : undefined
                 }
                 size="md"
-              /> */}
+              />
             </div>
           </div>
         </div>

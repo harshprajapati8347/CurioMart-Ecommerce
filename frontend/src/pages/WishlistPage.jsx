@@ -1,12 +1,12 @@
 import React from "react";
-import Header from "../components/Layout/Header";
+import Navbar from "../components/Layout/Navbar";
 import Footer from "../components/Layout/Footer";
 import WishlistPageContent from "../components/Wishlist/WishlistPageContent";
 
 const WishlistPage = () => {
   return (
     <div>
-      <Header />
+      <Navbar />
       <WishlistPageContent />
       <Footer />
     </div>

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import Footer from "../components/Layout/Footer";
-import Header from "../components/Layout/Header";
+import Navbar from "../components/Layout/Navbar";
 import styles from "../styles/styles";
 
 const FAQPage = () => {
   return (
     <div>
-      <Header activeHeading={5} />
+      <Navbar activeHeading={5} />
       <Faq />
       <Footer />
     </div>

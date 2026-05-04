@@ -1,12 +1,12 @@
 import React from 'react'
-import Header from '../components/Layout/Header'
+import Navbar from '../components/Layout/Navbar';
 import Footer from '../components/Layout/Footer'
 import TrackOrder from "../components/Profile/TrackOrder";
 
 const TrackOrderPage = () => {
   return (
     <div>
-        <Header />
+        <Navbar />
         <TrackOrder />
         <Footer />
     </div>

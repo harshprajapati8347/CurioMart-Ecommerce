@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import Footer from "../components/Layout/Footer";
-import Header from "../components/Layout/Header";
+import Navbar from "../components/Layout/Navbar";
 import ProductDetails from "../components/Products/ProductDetails";
 import SuggestedProduct from "../components/Products/SuggestedProduct";
 import { useSelector } from "react-redux";
@@ -26,7 +26,7 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <Header />
+      <Navbar />
       <ProductDetails data={data} />
       {!eventData && <>{data && <SuggestedProduct data={data} />}</>}
       <Footer />

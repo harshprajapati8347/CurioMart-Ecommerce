@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Header from "../components/Layout/Header";
+import Navbar from "../components/Layout/Navbar";
 import { useSelector } from "react-redux";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
@@ -225,7 +225,7 @@ const UserInbox = () => {
     <div className="w-full">
       {!open && (
         <>
-          <Header />
+          <Navbar />
           <h1 className="text-center text-[30px] py-3 font-Poppins">
             All Messages
           </h1>
