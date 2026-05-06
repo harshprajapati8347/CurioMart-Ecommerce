@@ -41,7 +41,6 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "install": "npm install --legacy-peer-deps",
     "start": "vite",
     "build": "vite build",
     "serve": "vite preview"
