@@ -76,7 +76,7 @@ router.post(
           });
         }
 
-        const shipping = shopSubTotal * 0.10;
+        const shipping = shopSubTotal > 1000 ? 0 : 50;
         let discountPrice = 0;
 
         if (couponCode) {

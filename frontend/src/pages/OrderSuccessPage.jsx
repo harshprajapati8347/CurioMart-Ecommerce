@@ -109,7 +109,7 @@ const OrderSuccessPage = () => {
       order.cart.reduce((sum, item) => sum + item.discountPrice * item.qty, 0)
     );
   }, 0);
-  const shipping = subtotal * 0.1;
+  const shipping = subtotal > 1000 ? 0 : 50;
   const computedTotal = subtotal + shipping;
   const discount =
     computedTotal - grandTotal > 0 ? computedTotal - grandTotal : 0;

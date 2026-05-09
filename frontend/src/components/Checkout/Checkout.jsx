@@ -45,10 +45,18 @@ const Checkout = () => {
       };
 
       const orderData = {
-        cart: cart.map(item => ({ _id: item._id, qty: item.qty, shopId: item.shopId })),
+        cart: cart.map((item) => ({
+          _id: item._id,
+          qty: item.qty,
+          shopId: item.shopId,
+        })),
         shippingAddress,
         user,
         couponCode: couponCodeData ? couponCodeData.name : undefined,
+        discountPrice,
+        totalPrice,
+        shipping,
+        subTotalPrice,
       };
 
       try {
@@ -61,15 +69,20 @@ const Checkout = () => {
         const { data } = await axios.post(
           `${server}/order/create-order`,
           orderData,
-          config
+          config,
         );
 
         if (data.success) {
           // Pass the client_secret and orders to the payment page
-          navigate("/payment", { state: { client_secret: data.client_secret, orders: data.orders } });
+          navigate("/payment", {
+            state: { client_secret: data.client_secret, orders: data.orders },
+          });
         }
       } catch (error) {
-        toast.error(error.response?.data?.message || "Something went wrong while creating order.");
+        toast.error(
+          error.response?.data?.message ||
+            "Something went wrong while creating order.",
+        );
       }
     }
   };
@@ -80,7 +93,7 @@ const Checkout = () => {
   );
 
   // this is shipping cost variable
-  const shipping = subTotalPrice * 0.1;
+  const shipping = subTotalPrice > 1000 ? 0 : 50;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
