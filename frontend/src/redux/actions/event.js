@@ -65,7 +65,7 @@ export const deleteEvent = (id) => async (dispatch) => {
 
     dispatch({
       type: "deleteeventSuccess",
-      payload: data.message,
+      payload: id,
     });
   } catch (error) {
     dispatch({

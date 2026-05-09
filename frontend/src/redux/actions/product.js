@@ -13,7 +13,7 @@ export const createProduct = (newForm) => async (dispatch) => {
     const { data } = await axios.post(
       `${import.meta.env.VITE_APP_SERVER_URL}/product/create-product`,
       newForm,
-      config
+      config,
     );
     dispatch({
       type: "productCreateSuccess",
@@ -37,7 +37,7 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     const { data } = await axios.get(
       `${
         import.meta.env.VITE_APP_SERVER_URL
-      }/product/get-all-products-shop/${id}`
+      }/product/get-all-products-shop/${id}`,
     );
     dispatch({
       type: "getAllProductsShopSuccess",
@@ -64,12 +64,12 @@ export const deleteProduct = (id) => async (dispatch) => {
       }/product/delete-shop-product/${id}`,
       {
         withCredentials: true,
-      }
+      },
     );
 
     dispatch({
       type: "deleteProductSuccess",
-      payload: data.message,
+      payload: id,
     });
   } catch (error) {
     dispatch({
@@ -87,7 +87,7 @@ export const getAllProducts = () => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_SERVER_URL}/product/get-all-products`
+      `${import.meta.env.VITE_APP_SERVER_URL}/product/get-all-products`,
     );
     dispatch({
       type: "getAllProductsSuccess",
@@ -96,6 +96,36 @@ export const getAllProducts = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "getAllProductsFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// update product
+export const updateProduct = (id, updatedForm) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "updateProductRequest",
+    });
+
+    const config = {
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
+    };
+
+    const { data } = await axios.put(
+      `${import.meta.env.VITE_APP_SERVER_URL}/product/update-shop-product/${id}`,
+      updatedForm,
+      config,
+    );
+
+    dispatch({
+      type: "updateProductSuccess",
+      payload: data.product,
+    });
+  } catch (error) {
+    dispatch({
+      type: "updateProductFail",
       payload: error.response.data.message,
     });
   }

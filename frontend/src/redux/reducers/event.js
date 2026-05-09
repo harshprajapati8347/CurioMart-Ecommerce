@@ -38,7 +38,10 @@ export const eventReducer = createReducer(initialState, {
   },
   deleteeventSuccess: (state, action) => {
     state.isLoading = false;
-    state.message = action.payload;
+    if (state.events) {
+      state.events = state.events.filter((e) => e._id !== action.payload);
+    }
+    state.message = "Event deleted successfully";
   },
   deleteeventFailed: (state, action) => {
     state.isLoading = false;
@@ -60,5 +63,8 @@ export const eventReducer = createReducer(initialState, {
 
   clearErrors: (state) => {
     state.error = null;
+  },
+  clearSuccess: (state) => {
+    state.success = false;
   },
 });

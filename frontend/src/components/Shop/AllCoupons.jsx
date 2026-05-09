@@ -24,7 +24,7 @@ const AllCoupons = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const fetchCoupons = () => {
     setIsLoading(true);
     axios
       .get(
@@ -33,7 +33,7 @@ const AllCoupons = () => {
         }`,
         {
           withCredentials: true,
-        }
+        },
       )
       .then((res) => {
         setIsLoading(false);
@@ -42,18 +42,22 @@ const AllCoupons = () => {
       .catch((error) => {
         setIsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchCoupons();
   }, [dispatch]);
 
   const handleDelete = async (id) => {
-    axios
+    await axios
       .delete(
         `${import.meta.env.VITE_APP_SERVER_URL}/coupon/delete-coupon/${id}`,
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .then((res) => {
         toast.success("Coupon code deleted succesfully!");
+        setCoupouns((prev) => prev.filter((c) => c._id !== id));
       });
-    window.location.reload();
   };
 
   const handleSubmit = async (e) => {
@@ -70,12 +74,12 @@ const AllCoupons = () => {
           value,
           shopId: seller._id,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .then((res) => {
         toast.success("Coupon code created successfully!");
         setOpen(false);
-        window.location.reload();
+        fetchCoupons();
       })
       .catch((error) => {
         toast.error(error.response.data.message);

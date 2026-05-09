@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect } from "react";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
@@ -20,7 +20,6 @@ const AllProducts = () => {
 
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
-    window.location.reload();
   };
 
   const columns = [
@@ -55,7 +54,7 @@ const AllProducts = () => {
     {
       field: "Preview",
       flex: 0.8,
-      minWidth: 100,
+      minWidth: 50,
       headerName: "",
       type: "number",
       sortable: false,
@@ -72,9 +71,28 @@ const AllProducts = () => {
       },
     },
     {
+      field: "Edit",
+      flex: 0.8,
+      minWidth: 50,
+      headerName: "",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <>
+            <Link to={`/dashboard-edit-product/${params.id}`}>
+              <Button>
+                <AiOutlineEdit size={20} />
+              </Button>
+            </Link>
+          </>
+        );
+      },
+    },
+    {
       field: "Delete",
       flex: 0.8,
-      minWidth: 120,
+      minWidth: 50,
       headerName: "",
       type: "number",
       sortable: false,

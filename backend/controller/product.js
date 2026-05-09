@@ -37,7 +37,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  })
+  }),
 );
 
 // get all products of a shop
@@ -54,7 +54,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  })
+  }),
 );
 
 // delete product of a shop
@@ -91,7 +91,43 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  })
+  }),
+);
+
+// update product of a shop
+router.put(
+  "/update-shop-product/:id",
+  isSeller,
+  upload.array("images"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+      const productData = req.body;
+
+      let product = await Product.findById(productId);
+      if (!product) {
+        return next(new ErrorHandler("Product not found with this id!", 500));
+      }
+
+      if (req.files && req.files.length > 0) {
+        const files = req.files;
+        const imageUrls = files.map((file) => `${file.filename}`);
+        productData.images = [...product.images, ...imageUrls];
+      }
+
+      product = await Product.findByIdAndUpdate(productId, productData, {
+        new: true,
+      });
+
+      res.status(201).json({
+        success: true,
+        product,
+        message: "Product Updated successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  }),
 );
 
 // get all products
@@ -108,7 +144,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  })
+  }),
 );
 
 // review for a product
@@ -129,13 +165,13 @@ router.put(
       };
 
       const isReviewed = product.reviews.find(
-        (rev) => rev.user._id === req.user._id
+        (rev) => rev.user._id === req.user._id,
       );
 
       if (isReviewed) {
         product.reviews.forEach((rev) => {
           if (rev.user._id === req.user._id) {
-            (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+            ((rev.rating = rating), (rev.comment = comment), (rev.user = user));
           }
         });
       } else {
@@ -155,7 +191,7 @@ router.put(
       await Order.findByIdAndUpdate(
         orderId,
         { $set: { "cart.$[elem].isReviewed": true } },
-        { arrayFilters: [{ "elem._id": productId }], new: true }
+        { arrayFilters: [{ "elem._id": productId }], new: true },
       );
 
       res.status(200).json({
@@ -165,7 +201,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  })
+  }),
 );
 
 // all products --- for admin
@@ -185,6 +221,6 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
 module.exports = router;

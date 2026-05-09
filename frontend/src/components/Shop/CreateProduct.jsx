@@ -24,13 +24,14 @@ const CreateProduct = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
+      dispatch({ type: "clearErrors" });
     }
     if (success) {
       toast.success("Product created successfully!");
       navigate("/dashboard");
-      window.location.reload();
+      dispatch({ type: "clearSuccess" });
     }
-  }, [dispatch, error, success]);
+  }, [dispatch, error, success, navigate]);
 
   const handleImageChange = (e) => {
     e.preventDefault();
