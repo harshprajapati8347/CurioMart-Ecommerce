@@ -6,6 +6,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 require("dotenv").config({
   path: "./.env",
 });

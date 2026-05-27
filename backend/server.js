@@ -1,6 +1,9 @@
 const app = require("./app");
 const connectDatabase = require("./db/Database");
 
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 // Handling uncaught Exception
 process.on("uncaughtException", (err) => {
   console.log(`Error: ${err.message}`);
