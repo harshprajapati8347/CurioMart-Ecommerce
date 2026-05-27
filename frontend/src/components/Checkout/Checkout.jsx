@@ -67,7 +67,7 @@ const Checkout = () => {
         };
 
         const { data } = await axios.post(
-          `${server}/order/create-order`,
+          `${import.meta.env.VITE_APP_SERVER_URL}/order/create-order`,
           orderData,
           config,
         );
@@ -81,7 +81,7 @@ const Checkout = () => {
       } catch (error) {
         toast.error(
           error.response?.data?.message ||
-            "Something went wrong while creating order.",
+          "Something went wrong while creating order.",
         );
       }
     }

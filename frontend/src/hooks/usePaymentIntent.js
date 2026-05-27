@@ -12,7 +12,7 @@ export const usePaymentIntent = () => {
     try {
       const config = { headers: { "Content-Type": "application/json" } };
       const { data } = await axios.post(
-        `${server}/order/create-order`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/order/create-order`,
         orderData,
         config,
       );
@@ -25,8 +25,8 @@ export const usePaymentIntent = () => {
       setLoading(false);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Something went wrong while creating order.",
+        err.message ||
+        "Something went wrong while creating order.",
       );
       return null;
     }

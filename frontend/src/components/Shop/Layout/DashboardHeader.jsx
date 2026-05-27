@@ -5,7 +5,6 @@ import { FiPackage, FiShoppingBag } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { BiMessageSquareDetail } from "react-icons/bi";
-import { backend_url } from "../../../server";
 import logo from "../../../Assests/images/logo.png";
 
 const Tooltip = ({ children, text }) => {

@@ -31,7 +31,7 @@ const OrderSuccessPage = () => {
     const fetchOrders = async () => {
       try {
         const { data } = await axios.get(
-          `${server}/order/get-all-orders/${user._id}`,
+          `${import.meta.env.VITE_APP_SERVER_URL}/order/get-all-orders/${user._id}`,
         );
         // A single checkout can split into multiple shop orders sharing the same paymentIntentId
         const currentOrders = data.orders.filter(

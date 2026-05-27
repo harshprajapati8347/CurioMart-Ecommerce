@@ -17,7 +17,7 @@ const ActivationPage = () => {
       console.log("activation_token", activation_token);
       const sendRequest = async () => {
         await axios
-          .post(`${server}/user/activation`, {
+          .post(`${import.meta.env.VITE_APP_SERVER_URL}/user/activation`, {
             activation_token,
           })
           .then((res) => {

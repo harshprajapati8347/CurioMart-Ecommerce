@@ -5,7 +5,6 @@ import { FiPackage, FiShoppingBag } from "react-icons/fi";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { backend_url } from "../../server";
 
 const AdminHeader = () => {
   const { user } = useSelector((state) => state.user);
