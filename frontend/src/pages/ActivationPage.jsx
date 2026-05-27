@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { server } from "../server";
 import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axios from "axios";
-import { server } from "../server";
 
 export const usePaymentIntent = () => {
   const [loading, setLoading] = useState(false);

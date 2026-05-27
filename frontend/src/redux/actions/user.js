@@ -1,5 +1,4 @@
 import axios from "axios";
-import { server } from "../../server";
 
 // load user
 export const loadUser = () => async (dispatch) => {
@@ -88,39 +87,39 @@ export const updateUserInformation =
 // update user address
 export const updatUserAddress =
   (country, city, address1, address2, zipCode, addressType) =>
-  async (dispatch) => {
-    try {
-      dispatch({
-        type: "updateUserAddressRequest",
-      });
+    async (dispatch) => {
+      try {
+        dispatch({
+          type: "updateUserAddressRequest",
+        });
 
-      const { data } = await axios.put(
-        `${import.meta.env.VITE_APP_SERVER_URL}/user/update-user-addresses`,
-        {
-          country,
-          city,
-          address1,
-          address2,
-          zipCode,
-          addressType,
-        },
-        { withCredentials: true }
-      );
+        const { data } = await axios.put(
+          `${import.meta.env.VITE_APP_SERVER_URL}/user/update-user-addresses`,
+          {
+            country,
+            city,
+            address1,
+            address2,
+            zipCode,
+            addressType,
+          },
+          { withCredentials: true }
+        );
 
-      dispatch({
-        type: "updateUserAddressSuccess",
-        payload: {
-          successMessage: "User address updated succesfully!",
-          user: data.user,
-        },
-      });
-    } catch (error) {
-      dispatch({
-        type: "updateUserAddressFailed",
-        payload: error.response.data.message,
-      });
-    }
-  };
+        dispatch({
+          type: "updateUserAddressSuccess",
+          payload: {
+            successMessage: "User address updated succesfully!",
+            user: data.user,
+          },
+        });
+      } catch (error) {
+        dispatch({
+          type: "updateUserAddressFailed",
+          payload: error.response.data.message,
+        });
+      }
+    };
 
 // delete user address
 export const deleteUserAddress = (id) => async (dispatch) => {

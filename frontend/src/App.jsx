@@ -63,8 +63,6 @@ import { ShopHomePage } from "./ShopRoutes.jsx";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
-import axios from "axios";
-import { server } from "./server";
 import CookieBanner from "./components/CookieConsent/CookieBanner";
 import { initializeDefaultConsent } from "./utils/cookieConsent";
 

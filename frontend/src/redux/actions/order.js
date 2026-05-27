@@ -1,5 +1,4 @@
 import axios from "axios";
-import { server } from "../../server";
 
 // get all orders of user
 export const getAllOrdersOfUser = (userId) => async (dispatch) => {

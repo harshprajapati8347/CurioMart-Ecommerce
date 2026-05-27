@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import axios from "axios";
-import { server } from "../../server";
 import { toast } from "react-toastify";
 
 const Checkout = () => {

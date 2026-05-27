@@ -1,5 +1,4 @@
 import axios from "axios";
-import { server } from "../../server";
 
 // create event
 export const createevent = (newForm) => async (dispatch) => {
