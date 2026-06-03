@@ -31,8 +31,43 @@ const ProductDetails = ({ data }) => {
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleTouchStart = (e) => {
+    if (!e.targetTouches || e.targetTouches.length === 0) return;
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!e.targetTouches || e.targetTouches.length === 0) return;
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+
+    if (distance > minSwipeDistance) {
+      // Swipe left -> next image
+      if (data?.images && select < data.images.length - 1) {
+        setSelect(select + 1);
+      } else {
+        setSelect(0);
+      }
+    } else if (distance < -minSwipeDistance) {
+      // Swipe right -> previous image
+      if (data?.images && select > 0) {
+        setSelect(select - 1);
+      } else if (data?.images) {
+        setSelect(data.images.length - 1);
+      }
+    }
+  };
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
@@ -103,8 +138,7 @@ const ProductDetails = ({ data }) => {
       const sellerId = data.shop._id;
       await axios
         .post(
-          `${
-            import.meta.env.VITE_APP_SERVER_URL
+          `${import.meta.env.VITE_APP_SERVER_URL
           }/conversation/create-new-conversation`,
           {
             groupTitle,
@@ -126,8 +160,8 @@ const ProductDetails = ({ data }) => {
   const discountPercentage =
     data?.originalPrice && data?.discountPrice
       ? Math.round(
-          ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
-        )
+        ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
+      )
       : 0;
 
   return (
@@ -137,22 +171,74 @@ const ProductDetails = ({ data }) => {
           {/* Main Product Section */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-10">
-              {/* Left Column - Images */}
-              <div className="space-y-4">
+              <div className="space-y-4 sm:space-y-0">
+                {/* Product Title & Rating */}
+                <div className="block sm:hidden">
+                  <div className="flex justify-between items-start mb-1">
+                    {/* Shop Logo */}
+                    <div className="flex items-start gap-2">
+                      <img
+                        src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data.shop.avatar}`}
+                        alt={data.shop.name}
+                        className="w-8 h-8 rounded-full mr-2 inline"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-sm text-gray-700 font-medium">
+                          {data.shop.name}
+                        </span>
+                        <Link to={`/shop/${data.shop._id}`} className="text-blue-500 hover:text-blue-600">
+                          Visit the store
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 items-end">
+                      <Ratings rating={data?.ratings} />
+                      <span className="text-sm text-gray-600">
+                        ({data?.ratings || 0} ratings)
+                      </span>
+                    </div>
+                  </div>
+                  <h1 className="text-md font-semibold text-gray-900 mb-3">
+                    {data.name}
+                  </h1>
+                </div>
+
                 {/* Main Image */}
-                <div className="relative bg-gray-50 rounded-2xl overflow-hidden aspect-square border border-gray-200">
+                <div
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  className="relative bg-gray-50 rounded-2xl overflow-hidden aspect-square border border-gray-200 select-none"
+                >
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      data && data.images[select]
-                    }`}
+                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data && data.images[select]
+                      }`}
                     alt={data.name}
-                    className="w-full h-full object-contain p-8"
+                    className="w-full h-full object-contain p-8 select-none"
+                    draggable="false"
                   />
 
                   {/* Discount Badge */}
                   {discountPercentage > 0 && (
-                    <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white text-lg font-bold px-4 py-2 rounded-full shadow-lg">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs sm:text-base font-bold px-3 py-1 sm:px-4 sm:py-2 rounded-full shadow-lg">
                       {discountPercentage}% OFF
+                    </div>
+                  )}
+
+                  {/* Mobile Dots Indicator */}
+                  {data.images && data.images.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-2 sm:hidden z-10 bg-white/60 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-white/20">
+                      {data.images.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelect(index)}
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${select === index
+                            ? "bg-blue-600 scale-125 w-4"
+                            : "bg-gray-400/80 hover:bg-gray-600"
+                            }`}
+                          aria-label={`Go to slide ${index + 1}`}
+                        />
+                      ))}
                     </div>
                   )}
 
@@ -163,37 +249,34 @@ const ProductDetails = ({ data }) => {
                         ? removeFromWishlistHandler(data)
                         : addToWishlistHandler(data)
                     }
-                    className={`absolute top-4 right-4 p-3 rounded-full transition-all shadow-lg ${
-                      click
-                        ? "bg-red-50 text-red-600 hover:bg-red-100"
-                        : "bg-white text-gray-600 hover:bg-gray-100"
-                    }`}
+                    className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 sm:p-3 rounded-full transition-all shadow-lg ${click
+                      ? "bg-red-50 text-red-600 hover:bg-red-100"
+                      : "bg-white text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     {click ? (
-                      <AiFillHeart size={24} />
+                      <AiFillHeart className="text-xl sm:text-2xl" />
                     ) : (
-                      <AiOutlineHeart size={24} />
+                      <AiOutlineHeart className="text-xl sm:text-2xl" />
                     )}
                   </button>
                 </div>
 
                 {/* Thumbnail Gallery */}
                 {data.images && data.images.length > 1 && (
-                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+                  <div className="hidden sm:grid sm:grid-cols-5 gap-3">
                     {data.images.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setSelect(index)}
-                        className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${
-                          select === index
-                            ? "border-blue-600 shadow-md"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
+                        className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${select === index
+                          ? "border-blue-600 shadow-md"
+                          : "border-gray-200 hover:border-gray-300"
+                          }`}
                       >
                         <img
-                          src={`${
-                            import.meta.env.VITE_APP_BACKEND_URL
-                          }/${image}`}
+                          src={`${import.meta.env.VITE_APP_BACKEND_URL
+                            }/${image}`}
                           alt={`${data.name} ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
@@ -248,7 +331,7 @@ const ProductDetails = ({ data }) => {
               {/* Right Column - Product Info */}
               <div className="space-y-6">
                 {/* Product Title & Rating */}
-                <div>
+                <div className="sm:block hidden">
                   <h1 className="text-xl lg:text-3xl font-semibold text-gray-900 mb-3">
                     {data.name}
                   </h1>
@@ -261,23 +344,24 @@ const ProductDetails = ({ data }) => {
                 </div>
 
                 {/* Price Section */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="text-4xl font-bold text-gray-900">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-4 sm:p-6 border border-green-100">
+                  <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                    <span className="text-2xl sm:text-4xl font-bold text-gray-900">
                       ₹{data.discountPrice}
                     </span>
                     {data.originalPrice && (
                       <>
-                        <span className="text-2xl text-gray-500 line-through">
+                        <span className="text-lg sm:text-2xl text-gray-500">M.R.P.:</span>
+                        <span className="text-lg sm:text-2xl text-gray-500 line-through">
                           ₹{data.originalPrice}
                         </span>
-                        <span className="bg-green-600 text-white text-sm font-bold px-4 py-1.5 rounded-full">
+                        <span className="bg-green-600 text-white text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full">
                           Save ₹{data.originalPrice - data.discountPrice}
                         </span>
                       </>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
                     Inclusive of all taxes
                   </p>
                 </div>
@@ -320,19 +404,19 @@ const ProductDetails = ({ data }) => {
                     <button
                       onClick={decrementCount}
                       disabled={count <= 1}
-                      className="p-4 hover:bg-gray-200 rounded-l-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-3 sm:p-4 hover:bg-gray-200 rounded-l-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <AiOutlineMinus size={18} />
+                      <AiOutlineMinus className="text-sm sm:text-lg" />
                     </button>
-                    <span className="px-8 py-4 font-bold text-gray-900 min-w-[80px] text-center text-lg">
+                    <span className="px-6 py-3 sm:px-8 sm:py-4 font-bold text-gray-900 min-w-[70px] sm:min-w-[80px] text-center text-base sm:text-lg">
                       {count}
                     </span>
                     <button
                       onClick={incrementCount}
                       disabled={count >= data.stock}
-                      className="p-4 hover:bg-gray-200 rounded-r-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-3 sm:p-4 hover:bg-gray-200 rounded-r-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <AiOutlinePlus size={18} />
+                      <AiOutlinePlus className="text-sm sm:text-lg" />
                     </button>
                   </div>
                 </div>
@@ -342,40 +426,39 @@ const ProductDetails = ({ data }) => {
                   <button
                     onClick={() => addToCartHandler(data._id)}
                     disabled={data.stock < 1}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 sm:py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-base sm:text-lg"
                   >
-                    <AiOutlineShoppingCart size={24} />
+                    <AiOutlineShoppingCart className="text-xl sm:text-2xl" />
                     <span>Add to Cart</span>
                   </button>
 
                   <button
                     disabled={data.stock < 1}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 sm:py-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-base sm:text-lg"
                   >
                     Buy Now
                   </button>
                 </div>
 
                 {/* Seller Info Card */}
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 sm:p-6 border border-blue-100">
                   <Link
                     to={`/shop/preview/${data?.shop._id}`}
-                    className="flex items-center gap-4 group mb-4"
+                    className="flex items-center gap-3 sm:gap-4 group mb-4"
                   >
                     <img
-                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                        data?.shop?.avatar
-                      }`}
+                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.shop?.avatar
+                        }`}
                       alt={data.shop.name}
-                      className="w-16 h-16 rounded-full border-2 border-white shadow-md object-cover"
+                      className="w-12 h-12 sm:w-16 h-16 rounded-full border-2 border-white shadow-md object-cover"
                     />
                     <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-bold text-sm sm:text-base text-gray-900 group-hover:text-blue-600 transition-colors">
                         {data.shop.name}
                       </h3>
-                      <div className="flex items-center gap-1 mt-1">
+                      <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
                         <Ratings rating={Number(averageRating)} />
-                        <span className="text-sm text-gray-600 ml-2">
+                        <span className="text-xs sm:text-sm text-gray-600 ml-1 sm:ml-2">
                           ({averageRating}/5)
                         </span>
                       </div>
@@ -384,9 +467,9 @@ const ProductDetails = ({ data }) => {
 
                   <button
                     onClick={handleMessageSubmit}
-                    className="w-full bg-white hover:bg-blue-600 hover:text-white text-gray-700 font-semibold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+                    className="w-full bg-white hover:bg-blue-600 hover:text-white text-gray-700 font-semibold py-2.5 sm:py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
-                    <AiOutlineMessage size={20} />
+                    <AiOutlineMessage size={18} />
                     <span>Contact Seller</span>
                   </button>
                 </div>
@@ -399,7 +482,7 @@ const ProductDetails = ({ data }) => {
                       <p className="font-semibold text-xs text-gray-900">
                         Free Delivery
                       </p>
-                      <p className="text-xs text-gray-600">Over ₹100</p>
+                      <p className="text-[10px] text-gray-600">Over ₹100</p>
                     </div>
                   </div>
                   <div className="bg-green-50 rounded-xl p-3 flex items-center gap-2">
@@ -408,7 +491,25 @@ const ProductDetails = ({ data }) => {
                       <p className="font-semibold text-xs text-gray-900">
                         Secure Payment
                       </p>
-                      <p className="text-xs text-gray-600">Protected</p>
+                      <p className="text-[10px] text-gray-600">Protected</p>
+                    </div>
+                  </div>
+                  <div className="bg-purple-50 rounded-xl p-3 flex items-center gap-2">
+                    <MdVerifiedUser className="w-6 h-6 text-purple-600 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-xs text-gray-900">
+                        Verified Seller
+                      </p>
+                      <p className="text-[10px] text-gray-600">Trusted</p>
+                    </div>
+                  </div>
+                  <div className="bg-orange-50 rounded-xl p-3 flex items-center gap-2">
+                    <BsBoxSeam className="w-6 h-6 text-orange-600 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-xs text-gray-900">
+                        Easy Returns
+                      </p>
+                      <p className="text-[10px] text-gray-600">7 days return</p>
                     </div>
                   </div>
                 </div>
@@ -424,8 +525,9 @@ const ProductDetails = ({ data }) => {
             averageRating={averageRating}
           />
         </div>
-      ) : null}
-    </div>
+      ) : null
+      }
+    </div >
   );
 };
 
@@ -451,20 +553,18 @@ const ProductDetailsInfo = ({
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
-            className={`relative px-6 py-4 font-semibold text-sm md:text-base whitespace-nowrap transition-colors flex items-center gap-2 ${
-              active === tab.id
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
+            className={`relative px-4 py-3 sm:px-6 sm:py-4 font-semibold text-sm md:text-base whitespace-nowrap transition-colors flex items-center gap-1.5 sm:gap-2 ${active === tab.id
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-600 hover:text-gray-900"
+              }`}
           >
             {tab.label}
             {tab.badge !== undefined && (
               <span
-                className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                  active === tab.id
-                    ? "bg-blue-100 text-blue-600"
-                    : "bg-gray-100 text-gray-600"
-                }`}
+                className={`px-2 py-0.5 rounded-full text-xs font-bold ${active === tab.id
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-gray-100 text-gray-600"
+                  }`}
               >
                 {tab.badge}
               </span>
@@ -508,20 +608,19 @@ const ProductDetailsInfo = ({
                     >
                       <div className="flex items-start gap-4">
                         <img
-                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                            item.user.avatar
-                          }`}
+                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.user.avatar
+                            }`}
                           alt={item.user.name}
                           className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
                         />
                         <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-gray-900">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
+                            <h4 className="font-semibold text-sm sm:text-base text-gray-900">
                               {item.user.name}
                             </h4>
                             <Ratings rating={item.rating || data?.ratings} />
                           </div>
-                          <p className="text-gray-700 leading-relaxed">
+                          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                             {item.comment}
                           </p>
                         </div>
@@ -554,21 +653,20 @@ const ProductDetailsInfo = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <Link to={`/shop/preview/${data.shop._id}`}>
-                <div className="flex items-center gap-4 mb-6 group">
+                <div className="flex items-center gap-3 sm:gap-4 mb-6 group">
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      data?.shop?.avatar
-                    }`}
-                    className="w-20 h-20 rounded-full border-2 border-gray-200 group-hover:border-blue-600 transition-colors object-cover shadow-md"
+                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.shop?.avatar
+                      }`}
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-gray-200 group-hover:border-blue-600 transition-colors object-cover shadow-md"
                     alt={data.shop.name}
                   />
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                       {data.shop.name}
                     </h3>
-                    <div className="flex items-center gap-1 mt-1">
+                    <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
                       <Ratings rating={Number(averageRating)} />
-                      <span className="text-sm text-gray-600 ml-2">
+                      <span className="text-xs sm:text-sm text-gray-600 ml-1 sm:ml-2">
                         ({averageRating}/5)
                       </span>
                     </div>
