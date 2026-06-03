@@ -249,7 +249,7 @@ const ProductDetails = ({ data }) => {
               <div className="space-y-6">
                 {/* Product Title & Rating */}
                 <div>
-                  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                  <h1 className="text-xl lg:text-3xl font-semibold text-gray-900 mb-3">
                     {data.name}
                   </h1>
                   <div className="flex items-center gap-3">
@@ -307,7 +307,7 @@ const ProductDetails = ({ data }) => {
                     About this product
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
-                    {data.description}
+                    {data.shortDescription}
                   </p>
                 </div>
 
@@ -576,7 +576,7 @@ const ProductDetailsInfo = ({
                 </div>
               </Link>
               <p className="text-gray-700 leading-relaxed">
-                {data.shop.description}
+                {data.shop.shortDescription}
               </p>
             </div>
 

@@ -28,9 +28,8 @@ const EventCard = ({ active, data }) => {
 
   return (
     <div
-      className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden ${
-        !active ? "mb-10" : ""
-      } flex flex-col lg:flex-row`}
+      className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden ${!active ? "mb-10" : ""
+        } flex flex-col lg:flex-row`}
     >
       <div className="lg:w-1/2 w-full">
         <img
@@ -42,7 +41,7 @@ const EventCard = ({ active, data }) => {
 
       <div className="lg:w-1/2 w-full p-6 flex flex-col justify-center gap-4">
         <h2 className="text-2xl font-semibold text-gray-800">{data.name}</h2>
-        <p className="text-gray-600">{data.description}</p>
+        <p className="text-gray-600">{data.shortDescription}</p>
 
         <div className="flex justify-between items-center text-gray-700">
           <div className="flex items-center gap-2">

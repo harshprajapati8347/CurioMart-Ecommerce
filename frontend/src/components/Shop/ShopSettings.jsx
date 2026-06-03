@@ -13,6 +13,9 @@ const ShopSettings = () => {
   const [description, setDescription] = useState(
     seller && seller.description ? seller.description : ""
   );
+  const [shortDescription, setShortDescription] = useState(
+    seller && seller.shortDescription ? seller.shortDescription : ""
+  );
   const [address, setAddress] = useState(seller && seller.address);
   const [phoneNumber, setPhoneNumber] = useState(seller && seller.phoneNumber);
   const [zipCode, setZipcode] = useState(seller && seller.zipCode);
@@ -60,6 +63,7 @@ const ShopSettings = () => {
           zipCode,
           phoneNumber,
           description,
+          shortDescription,
         },
         { withCredentials: true }
       )
@@ -117,6 +121,22 @@ const ShopSettings = () => {
               onChange={(e) => setName(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
               required
+            />
+          </div>
+          <div className="w-[100%] flex items-center flex-col 800px:w-[50%] mt-5">
+            <div className="w-full pl-[3%]">
+              <label className="block pb-2">Shop Short Description</label>
+            </div>
+            <input
+              type="text"
+              placeholder={`${
+                seller?.shortDescription
+                  ? seller.shortDescription
+                  : "Enter your shop short description"
+              }`}
+              value={shortDescription}
+              onChange={(e) => setShortDescription(e.target.value)}
+              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
             />
           </div>
           <div className="w-[100%] flex items-center flex-col 800px:w-[50%] mt-5">

@@ -285,7 +285,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     Product Description
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
-                    {data.description}
+                    {data.shortDescription}
                   </p>
                 </div>
 

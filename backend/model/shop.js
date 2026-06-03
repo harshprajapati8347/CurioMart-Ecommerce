@@ -20,6 +20,9 @@ const shopSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  shortDescription: {
+    type: String,
+  },
   address: {
     type: String,
     required: true,

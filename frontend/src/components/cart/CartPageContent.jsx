@@ -238,9 +238,9 @@ const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               >
                 {data.name}
               </Link>
-              {data.description && (
-                <p className="mt-1 text-sm text-gray-600 line-clamp-2">
-                  {data.description}
+              {data.shortDescription && (
+                <p className="mt-1 text-sm text-gray-600 line-clamp-3">
+                  {data.shortDescription}
                 </p>
               )}
             </div>

@@ -317,7 +317,7 @@ router.put(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { name, description, address, phoneNumber, zipCode } = req.body;
+      const { name, description, shortDescription, address, phoneNumber, zipCode } = req.body;
 
       const shop = await Shop.findOne(req.seller._id);
 
@@ -327,6 +327,7 @@ router.put(
 
       shop.name = name;
       shop.description = description;
+      shop.shortDescription = shortDescription;
       shop.address = address;
       shop.phoneNumber = phoneNumber;
       shop.zipCode = zipCode;
