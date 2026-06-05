@@ -1,4 +1,4 @@
-name: Deploy Backend & Socket To EC2
+name: Deploy Backend & Socket to AWS EC2
 
 on:
   push:
@@ -7,10 +7,11 @@ on:
 
 jobs:
   deploy:
+    name: Build and Deploy via Docker
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to EC2
+      - name: Execute Deployment Command over SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -19,12 +20,23 @@ jobs:
           script: |
             set -e
 
-            echo "Deploying Backend..."
+            # Navigate to the root of your repository
+            cd /home/ubuntu/curiomart
+
+            # 1. Safely sync code with GitHub (No merge conflicts)
+            echo "Pulling latest code from GitHub..."
+            git fetch --all
+            git reset --hard origin/main
+
+            # 2. Deploy the Backend
+            echo "Building and Deploying Backend..."
             cd /home/ubuntu/curiomart/backend
-            git pull origin main
             sudo docker compose -f docker-compose.prod.yml up -d --build
 
-            echo "Deploying Socket..."
+            # 3. Deploy the Socket Server
+            echo "Building and Deploying Socket..."
             cd /home/ubuntu/curiomart/socket
-            git pull origin main
             sudo docker compose -f docker-compose.prod.yml up -d --build
+            
+            # Optional: Clean up old Docker images to save server space
+            sudo docker image prune -f
