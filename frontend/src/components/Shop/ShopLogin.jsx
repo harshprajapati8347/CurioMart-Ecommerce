@@ -6,7 +6,7 @@ import {
   AiOutlineLock,
 } from "react-icons/ai";
 import { HiShoppingBag } from "react-icons/hi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AuthLayout from "../Layout/AuthLayout";

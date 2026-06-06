@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../../styles/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { MdTrackChanges } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Header from "../components/Layout/Header";

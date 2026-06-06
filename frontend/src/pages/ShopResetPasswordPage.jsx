@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import ShopResetPassword from "../components/Shop/ShopResetPassword.jsx";
 
 const ShopResetPasswordPage = () => {

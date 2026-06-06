@@ -7,7 +7,7 @@ import {
 } from "react-icons/ai";
 import { MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import {
   footercompanyLinks,
   footerProductLinks,

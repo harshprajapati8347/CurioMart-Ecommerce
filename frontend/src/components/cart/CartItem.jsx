@@ -2,7 +2,7 @@ import React from "react";
 import { RxCross1 } from "react-icons/rx";
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import { MdDeleteOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { toast } from "react-toastify";
 
 const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {

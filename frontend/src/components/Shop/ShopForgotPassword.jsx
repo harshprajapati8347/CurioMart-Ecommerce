@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { AiOutlineMail } from "react-icons/ai";
 import { HiCheckCircle, HiShoppingBag } from "react-icons/hi";
 import axios from "axios";

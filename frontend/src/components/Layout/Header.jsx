@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { categoriesData } from "../../static/data";
 import {
   AiOutlineHeart,

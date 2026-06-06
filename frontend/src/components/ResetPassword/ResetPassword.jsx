@@ -5,7 +5,7 @@ import {
   AiOutlineLock,
 } from "react-icons/ai";
 import { HiShieldCheck } from "react-icons/hi";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AuthLayout from "../Layout/AuthLayout";

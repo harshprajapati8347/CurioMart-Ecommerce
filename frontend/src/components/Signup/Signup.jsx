@@ -7,7 +7,7 @@ import {
   AiOutlineUser,
 } from "react-icons/ai";
 import { HiOutlineUpload } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { RxAvatar } from "react-icons/rx";
 import axios from "axios";
 import { toast } from "react-toastify";

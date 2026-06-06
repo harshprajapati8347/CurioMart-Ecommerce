@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const CartSummary = ({ cart, totalPrice, setOpenCart }) => {
   const itemCount = cart.reduce((acc, item) => acc + item.qty, 0);

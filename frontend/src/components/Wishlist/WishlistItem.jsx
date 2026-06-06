@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { MdDeleteOutline } from "react-icons/md";
 import { BsCartPlus } from "react-icons/bs";
 import { toast } from "react-toastify";

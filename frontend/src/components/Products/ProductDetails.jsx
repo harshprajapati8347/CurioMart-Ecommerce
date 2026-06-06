@@ -11,7 +11,7 @@ import { HiOutlineTruck, HiOutlineShieldCheck } from "react-icons/hi";
 import { MdVerifiedUser, MdLocalOffer } from "react-icons/md";
 import { BsBoxSeam } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { getAllProductsShop } from "../../redux/actions/product";
 import styles from "../../styles/styles";
 import {

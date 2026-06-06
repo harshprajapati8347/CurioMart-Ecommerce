@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 
 const ProtectedAdminRoute = ({ children }) => {
   const { loading, isAuthenticated,user } = useSelector((state) => state.user);

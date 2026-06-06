@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { AiOutlineHeart } from "react-icons/ai";
 
 const EmptyWishlist = ({ onClose }) => {

@@ -11,7 +11,7 @@ import {
 import { RxCross1 } from "react-icons/rx";
 import { HiOutlineTruck } from "react-icons/hi";
 import { MdVerifiedUser, MdLocalOffer } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";

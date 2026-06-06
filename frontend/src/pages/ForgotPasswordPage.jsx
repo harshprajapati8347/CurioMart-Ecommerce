@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import ForgotPassword from "../components/ForgotPassword/ForgotPassword.jsx";
 
 const ForgotPasswordPage = () => {
