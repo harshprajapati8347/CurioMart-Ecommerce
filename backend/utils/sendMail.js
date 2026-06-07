@@ -1,24 +1,24 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require('resend');
 
 const sendMail = async (options) => {
-    const transporter = nodemailer.createTransport({
-        host: process.env.SMPT_HOST,
-        port: process.env.SMPT_PORT,
-        service: process.env.SMPT_SERVICE,
-        auth:{
-            user: process.env.SMPT_MAIL,
-            pass: process.env.SMPT_PASSWORD,
-        },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const mailOptions = {
-        from: process.env.SMPT_MAIL,
+    const { data, error } = await resend.emails.send({
+        from: `CurioMart <${process.env.SMPT_HOST}>`,
         to: options.email,
         subject: options.subject,
         text: options.message,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    if (data) {
+        console.log(data);
+        return;
+    }
 };
 
 module.exports = sendMail;
