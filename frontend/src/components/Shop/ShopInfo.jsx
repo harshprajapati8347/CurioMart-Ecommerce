@@ -5,6 +5,7 @@ import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const ShopInfo = ({ isOwner }) => {
   const [data, setData] = useState({});
@@ -58,7 +59,7 @@ const ShopInfo = ({ isOwner }) => {
           <div className="w-full py-5">
             <div className="w-full flex item-center justify-center">
               <img
-                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data.avatar}`}
+                src={getImageUrl(data.avatar)}
                 alt=""
                 className="w-[150px] h-[150px] object-cover rounded-full"
               />

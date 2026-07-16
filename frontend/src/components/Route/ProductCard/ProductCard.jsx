@@ -16,6 +16,7 @@ import {
 import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
+import { getImageUrl } from "../../../utils/getImageUrl";
 
 const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -93,9 +94,7 @@ const ProductCard = ({ data, isEvent }) => {
         >
           <div className="relative h-56 bg-gray-50 overflow-hidden">
             <img
-              src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                data.images && data.images[0]
-              }`}
+              src={getImageUrl(data.images && data.images[0])}
               alt={data.name}
               className={`w-full h-full object-contain p-4 transition-transform duration-500 ${
                 isHovered ? "scale-110" : "scale-100"

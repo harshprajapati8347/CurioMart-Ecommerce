@@ -45,7 +45,7 @@ const ShopCreate = () => {
       const res = await axios.post(
         `${import.meta.env.VITE_APP_SERVER_URL}/shop/create-shop`,
         newForm,
-        config,
+        config
       );
       toast.success(res.data.message);
       setName("");
@@ -119,11 +119,18 @@ const ShopCreate = () => {
               type="tel"
               name="phoneNumber"
               id="phoneNumber"
+              pattern="^[0-9]{10}$"
+              title="Please enter a valid 10-digit phone number"
               required
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length <= 10) {
+                  setPhoneNumber(value);
+                }
+              }}
               className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm"
-              placeholder="+1 (555) 000-0000"
+              placeholder="+91 9876543210"
             />
           </div>
         </div>

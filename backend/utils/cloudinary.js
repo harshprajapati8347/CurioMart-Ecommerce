@@ -79,4 +79,4 @@ const deleteFromCloudinary = async (publicId) => {
   }
 };
 
-module.exports = { uploadOnCloudinary, deleteFromCloudinary };
+module.exports = { uploadOnCloudinary, deleteFromCloudinary, safeUnlink };

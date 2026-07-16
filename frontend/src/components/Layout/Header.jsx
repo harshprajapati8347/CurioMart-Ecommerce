@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import logo from "../../Assests/images/logo.png";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -43,7 +44,7 @@ const Header = ({ activeHeading }) => {
     const filteredProducts =
       allProducts &&
       allProducts.filter((product) =>
-        product.name.toLowerCase().includes(term.toLowerCase()),
+        product.name.toLowerCase().includes(term.toLowerCase())
       );
     setSearchData(filteredProducts);
   };
@@ -155,9 +156,7 @@ const Header = ({ activeHeading }) => {
                         onClick={clearSearch}
                       >
                         <img
-                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                            item.images[0]
-                          }`}
+                          src={getImageUrl(item.images[0])}
                           alt={item.name}
                           className="w-12 h-12 object-cover rounded"
                         />
@@ -268,9 +267,7 @@ const Header = ({ activeHeading }) => {
               >
                 {isAuthenticated ? (
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      user?.avatar
-                    }`}
+                    src={getImageUrl(user?.avatar)}
                     alt="Profile"
                     className="w-9 h-9 rounded-full object-cover border-2 border-gray-700 hover:border-gray-500 transition-colors"
                   />
@@ -347,7 +344,7 @@ const Header = ({ activeHeading }) => {
             >
               {isAuthenticated ? (
                 <img
-                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
+                  src={getImageUrl(user?.avatar)}
                   alt="Profile"
                   className="w-7 h-7 rounded-full object-cover border-2 border-gray-300"
                 />
@@ -388,7 +385,7 @@ const Header = ({ activeHeading }) => {
                     onClick={clearSearch}
                   >
                     <img
-                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images[0]}`}
+                      src={getImageUrl(item.images[0])}
                       alt={item.name}
                       className="w-12 h-12 object-cover rounded"
                     />
@@ -480,9 +477,7 @@ const Header = ({ activeHeading }) => {
                         }}
                       >
                         <img
-                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                            item.images[0]
-                          }`}
+                          src={getImageUrl(item.images[0])}
                           alt={item.name}
                           className="w-12 h-12 object-cover rounded"
                         />
@@ -522,9 +517,7 @@ const Header = ({ activeHeading }) => {
                   onClick={() => setOpen(false)}
                 >
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      user?.avatar
-                    }`}
+                    src={getImageUrl(user?.avatar)}
                     alt="Profile"
                     className="w-14 h-14 rounded-full object-cover border-2 border-green-500"
                   />

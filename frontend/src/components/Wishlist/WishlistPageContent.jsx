@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
-import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineHeart } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import { BsCartPlus } from "react-icons/bs";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const WishlistPageContent = () => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -193,7 +194,7 @@ const WishlistItemCard = ({
 
   const discountPercentage = data.originalPrice
     ? Math.round(
-        ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100,
+        ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
       )
     : 0;
 
@@ -209,7 +210,7 @@ const WishlistItemCard = ({
       <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
         <Link to={`/product/${data._id}`}>
           <img
-            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.images[0]}`}
+            src={getImageUrl(data?.images && data.images[0])}
             alt={data.name}
             className={`w-full h-full object-contain p-4 transition-transform duration-500 ${
               isHovered ? "scale-110" : "scale-100"

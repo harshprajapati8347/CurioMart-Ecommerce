@@ -6,7 +6,8 @@ import Header from "../components/Layout/Header";
 import Footer from "../components/Layout/Footer";
 import Lottie from "react-lottie";
 import animationData from "../Assests/animations/107043-success.json";
-import { FiCheckCircle, FiPackage, FiTruck, FiHome } from "react-icons/fi";
+import { FiCheckCircle, FiTruck, FiHome } from "react-icons/fi";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const OrderSuccessPage = () => {
   const [orders, setOrders] = useState([]);
@@ -30,11 +31,11 @@ const OrderSuccessPage = () => {
     const fetchOrders = async () => {
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_APP_SERVER_URL}/order/get-all-orders/${user._id}`,
+          `${import.meta.env.VITE_APP_SERVER_URL}/order/get-all-orders/${user._id}`
         );
         // A single checkout can split into multiple shop orders sharing the same paymentIntentId
         const currentOrders = data.orders.filter(
-          (o) => o.stripePaymentIntentId === paymentIntentId,
+          (o) => o.stripePaymentIntentId === paymentIntentId
         );
 
         if (currentOrders.length > 0) {
@@ -183,7 +184,7 @@ const OrderSuccessPage = () => {
                     className="p-6 flex flex-col sm:flex-row gap-4 items-center sm:items-start"
                   >
                     <img
-                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images && item.images[0]}`}
+                      src={getImageUrl(item.images && item.images[0])}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                     />

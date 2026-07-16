@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { MdDeleteOutline } from "react-icons/md";
 import { BsCartPlus } from "react-icons/bs";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const WishlistItem = ({
   data,
@@ -26,7 +27,7 @@ const WishlistItem = ({
 
   const discountPercentage = data.originalPrice
     ? Math.round(
-        ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100,
+        ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
       )
     : 0;
 
@@ -43,7 +44,7 @@ const WishlistItem = ({
           className="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gray-100 ring-1 ring-gray-200 hover:ring-pink-400 transition-all"
         >
           <img
-            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.images[0]}`}
+            src={getImageUrl(data?.images && data.images[0])}
             alt={data.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />

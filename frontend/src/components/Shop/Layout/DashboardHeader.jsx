@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import logo from "../../../Assests/images/logo.png";
+import { getImageUrl } from "../../../utils/getImageUrl";
 
 const Tooltip = ({ children, text }) => {
   return (
@@ -76,7 +77,7 @@ const DashboardHeader = () => {
           </Tooltip>
           <Link to={`/shop/${seller._id}`}>
             <img
-              src={`${import.meta.env.VITE_APP_BACKEND_URL}/${seller.avatar}`}
+              src={getImageUrl(seller.avatar)}
               alt=""
               className="w-[50px] h-[50px] rounded-full object-cover"
             />

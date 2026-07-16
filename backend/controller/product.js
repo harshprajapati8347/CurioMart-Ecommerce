@@ -7,7 +7,6 @@ const Order = require("../model/order");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
-const fs = require("fs");
 const {
   uploadOnCloudinary,
   deleteFromCloudinary,
@@ -108,16 +107,13 @@ router.delete(
 
       const productData = await Product.findById(productId);
 
-      productData.images.forEach((imageUrl) => {
-        const filename = imageUrl;
-        const filePath = `uploads/${filename}`;
-
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.log(err);
-          }
-        });
-      });
+      if (productData && productData.images.length > 0) {
+        await Promise.all(
+          productData.images.map((image) =>
+            deleteFromCloudinary(image.public_id)
+          )
+        );
+      }
 
       const product = await Product.findByIdAndDelete(productId);
 
@@ -141,6 +137,8 @@ router.put(
   isSeller,
   upload.array("images"),
   catchAsyncErrors(async (req, res, next) => {
+    const files = req.files;
+    let uploadedImages = []; // track what's on Cloudinary so we can roll back on failure
     try {
       const productId = req.params.id;
       const productData = req.body;
@@ -150,10 +148,34 @@ router.put(
         return next(new ErrorHandler("Product not found with this id!", 500));
       }
 
-      if (req.files && req.files.length > 0) {
-        const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
-        productData.images = [...product.images, ...imageUrls];
+      if (files && files.length > 0) {
+        // Upload all new images to Cloudinary in parallel
+        const uploadResults = await Promise.all(
+          files.map((file) => uploadOnCloudinary(file.path))
+        );
+
+        // If any upload permanently failed (null after retries), abort and roll back
+        const failedCount = uploadResults.filter((r) => r === null).length;
+        if (failedCount > 0) {
+          await Promise.all(
+            uploadResults
+              .filter((r) => r !== null)
+              .map((r) => deleteFromCloudinary(r.public_id))
+          );
+          return next(
+            new ErrorHandler(
+              `${failedCount} image(s) failed to upload. Please try again.`,
+              500
+            )
+          );
+        }
+
+        uploadedImages = uploadResults.map((result) => ({
+          public_id: result.public_id,
+          url: result.secure_url,
+        }));
+
+        productData.images = [...product.images, ...uploadedImages];
       }
 
       product = await Product.findByIdAndUpdate(productId, productData, {
@@ -166,6 +188,11 @@ router.put(
         message: "Product Updated successfully!",
       });
     } catch (error) {
+      if (uploadedImages.length > 0) {
+        await Promise.all(
+          uploadedImages.map((image) => deleteFromCloudinary(image.public_id))
+        );
+      }
       return next(new ErrorHandler(error, 400));
     }
   })

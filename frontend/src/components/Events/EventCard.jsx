@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addTocart } from "../../redux/actions/cart";
 import CountDown from "./CountDown";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const EventCard = ({ active, data }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -28,12 +29,13 @@ const EventCard = ({ active, data }) => {
 
   return (
     <div
-      className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden ${!active ? "mb-10" : ""
-        } flex flex-col lg:flex-row`}
+      className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden ${
+        !active ? "mb-10" : ""
+      } flex flex-col lg:flex-row`}
     >
       <div className="lg:w-1/2 w-full">
         <img
-          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data.images[0]}`}
+          src={getImageUrl(data.images && data.images[0])}
           alt={data.name}
           className="w-full h-full object-cover rounded-t-xl lg:rounded-t-none lg:rounded-l-xl"
         />

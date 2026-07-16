@@ -81,6 +81,92 @@ Live = https://curiomart.iamharsh.in
 
 ---
 
+## 🖼️ **Asset Management (Cloudinary)**
+
+All image uploads (product images, event images, user/shop avatars, and chat
+attachments) go through a single, consistent pipeline instead of being stored
+on local disk:
+
+```plaintext
+Client (multipart/form-data)
+        │
+        ▼
+  multer (backend/multer.js)
+  writes the file to backend/public/temp
+        │
+        ▼
+  uploadOnCloudinary (backend/utils/cloudinary.js)
+  uploads to Cloudinary with automatic retries,
+  then deletes the local temp file
+        │
+        ▼
+  { public_id, url } saved on the Mongo document
+```
+
+**Key pieces**
+
+- `backend/multer.js` — multer disk storage that writes incoming files to
+  `backend/public/temp` (a scratch directory, not served statically and not a
+  long-term store).
+- `backend/utils/cloudinary.js` — exposes `uploadOnCloudinary(localFilePath, { folder })`
+  and `deleteFromCloudinary(publicId)`. Uploads retry up to 3 times before
+  giving up, and the local temp file is always cleaned up (`safeUnlink`)
+  whether the upload succeeds or ultimately fails.
+- Every document that stores an image persists it as `{ public_id, url }`
+  (or an array of these for multi-image fields), never a bare filename:
+  - `Product.images` / `Event.images` — array of `{ public_id, url }`
+  - `User.avatar` / `Shop.avatar` — single `{ public_id, url }`
+  - `Messages.images` — optional single `{ public_id, url }` chat attachment
+
+**Cloudinary folders used per asset type**
+
+| Asset               | Folder                      |
+| ------------------- | --------------------------- |
+| Product images      | `curiomart-server/products` |
+| Event images        | `curiomart-server/events`   |
+| User avatars        | `curiomart-server/users`    |
+| Shop/seller avatars | `curiomart-server/shops`    |
+| Chat attachments    | `curiomart-server/messages` |
+
+**Create / update / delete conventions**
+
+- **Create**: files are uploaded to Cloudinary in parallel; if any upload
+  permanently fails, any images that _did_ succeed are rolled back
+  (`deleteFromCloudinary`) so no orphaned assets are left behind, and the
+  request fails cleanly.
+- **Update** (e.g. `update-shop-product`, avatar updates): the old Cloudinary
+  asset is only deleted once the new one has been uploaded successfully.
+- **Delete** (products, events, users, sellers): the corresponding Cloudinary
+  asset(s) are deleted via `deleteFromCloudinary` before/alongside removing
+  the Mongo document, so Cloudinary storage doesn't accumulate orphaned files.
+
+**Frontend**
+
+- The frontend never talks to Cloudinary directly — it uploads files to the
+  backend via the same `multipart/form-data` field names as before
+  (`images`, `file`, `image`), and the backend returns the persisted
+  `{ public_id, url }` (or array of them).
+- Every place that renders an image reads the `url` field via a single shared
+  helper, `frontend/src/utils/getImageUrl.js`, instead of concatenating a
+  backend base URL with a filename.
+
+**Environment variables required (`backend/config/.env`)**
+
+```plaintext
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+**Note on the legacy `uploads/` folder**
+
+`backend/app.js` still serves `backend/uploads` statically for backward
+compatibility with any records created before this migration. No new write
+path (create/update) uses that folder anymore — all new and replaced images
+go through Cloudinary as described above.
+
+---
+
 ## 🧑‍💻 **Best Practices Followed**
 
 - **Code Modularity**: Clear separation of concerns for maintainable, scalable code.
@@ -98,11 +184,3 @@ For any queries or support, feel free to reach out:
 - **Email**: [harshprajapati0123@gmail.com](mailto:harshprajapati0123@gmail.com)
 - **LinkedIn**: [Harsh Prajapati](https://www.linkedin.com/in/harsh-prajapati-developer/)
 - **Portfolio**: [iamharsh.in](https://iamharsh.in)
-
----
-
-## ⚠️ **Disclaimer**
-
-This codebase is proprietary and owned by **Harsh Prajapati**. Unauthorized reproduction, distribution, or modification is strictly prohibited and subject to legal action under applicable intellectual property laws.
-
-**© 2023-2024 Harsh Prajapati. All rights reserved.**

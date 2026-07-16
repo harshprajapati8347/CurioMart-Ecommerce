@@ -1,7 +1,5 @@
 const express = require("express");
-const path = require("path");
 const router = express.Router();
-const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
@@ -11,6 +9,11 @@ const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken");
+const {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+  safeUnlink,
+} = require("../utils/cloudinary");
 
 // create shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
@@ -18,25 +21,35 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     const { email } = req.body;
     const sellerEmail = await Shop.findOne({ email });
     if (sellerEmail) {
-      const filename = req.file.filename;
-      const filePath = `uploads/${filename}`;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ message: "Error deleting file" });
-        }
-      });
+      // avatar hasn't been uploaded to Cloudinary yet, just drop the local temp file
+      if (req.file) safeUnlink(req.file.path);
       return next(new ErrorHandler("User already exists", 400));
     }
 
-    const filename = req.file.filename;
-    const fileUrl = path.join(filename);
+    if (!req.file) {
+      return next(new ErrorHandler("Please upload your shop avatar!", 400));
+    }
+
+    const uploadResult = await uploadOnCloudinary(req.file.path, {
+      folder: "curiomart-server/shops",
+    });
+
+    if (!uploadResult) {
+      return next(
+        new ErrorHandler("Avatar upload failed. Please try again.", 500)
+      );
+    }
+
+    const avatar = {
+      public_id: uploadResult.public_id,
+      url: uploadResult.secure_url,
+    };
 
     const seller = {
       name: req.body.name,
       email: email,
       password: req.body.password,
-      avatar: fileUrl,
+      avatar,
       address: req.body.address,
       phoneNumber: req.body.phoneNumber,
       zipCode: req.body.zipCode,
@@ -56,6 +69,8 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
         message: `please check your email:- ${seller.email} to activate your shop!`,
       });
     } catch (error) {
+      // activation email failed to send — don't leave an orphaned avatar on Cloudinary
+      await deleteFromCloudinary(avatar.public_id);
       return next(new ErrorHandler(error.message, 500));
     }
   } catch (error) {
@@ -79,7 +94,7 @@ router.post(
 
       const newSeller = jwt.verify(
         activation_token,
-        process.env.ACTIVATION_SECRET,
+        process.env.ACTIVATION_SECRET
       );
 
       if (!newSeller) {
@@ -108,7 +123,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // login shop
@@ -132,7 +147,7 @@ router.post(
 
       if (!isPasswordValid) {
         return next(
-          new ErrorHandler("Please provide the correct information", 400),
+          new ErrorHandler("Please provide the correct information", 400)
         );
       }
 
@@ -140,7 +155,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // load shop
@@ -162,7 +177,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // log out from shop
@@ -183,7 +198,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // forgot password
@@ -203,7 +218,7 @@ router.post(
       const resetToken = jwt.sign(
         { id: shop._id },
         process.env.ACTIVATION_SECRET,
-        { expiresIn: "15m" },
+        { expiresIn: "15m" }
       );
 
       const resetUrl = `${process.env.FRONTEND_URL}/shop-reset-password?reset_token=${resetToken}`;
@@ -225,7 +240,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // reset password
@@ -237,7 +252,7 @@ router.post(
 
       if (!reset_token || !password) {
         return next(
-          new ErrorHandler("Please provide reset token and new password", 400),
+          new ErrorHandler("Please provide reset token and new password", 400)
         );
       }
 
@@ -263,7 +278,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler("Invalid or expired reset token", 400));
     }
-  }),
+  })
 );
 
 // get shop info
@@ -279,7 +294,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // update shop profile picture
@@ -291,14 +306,32 @@ router.put(
     try {
       const existsUser = await Shop.findById(req.seller._id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
+      if (!req.file) {
+        return next(new ErrorHandler("Please upload an avatar image!", 400));
+      }
 
-      fs.unlinkSync(existAvatarPath);
+      const uploadResult = await uploadOnCloudinary(req.file.path, {
+        folder: "curiomart-server/shops",
+      });
 
-      const fileUrl = path.join(req.file.filename);
+      if (!uploadResult) {
+        return next(
+          new ErrorHandler("Avatar upload failed. Please try again.", 500)
+        );
+      }
+
+      // only delete the old avatar once the new one is safely uploaded
+      if (existsUser.avatar?.public_id) {
+        await deleteFromCloudinary(existsUser.avatar.public_id);
+      }
+
+      const avatar = {
+        public_id: uploadResult.public_id,
+        url: uploadResult.secure_url,
+      };
 
       const seller = await Shop.findByIdAndUpdate(req.seller._id, {
-        avatar: fileUrl,
+        avatar,
       });
 
       res.status(200).json({
@@ -308,7 +341,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // update seller info
@@ -317,7 +350,14 @@ router.put(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { name, description, shortDescription, address, phoneNumber, zipCode } = req.body;
+      const {
+        name,
+        description,
+        shortDescription,
+        address,
+        phoneNumber,
+        zipCode,
+      } = req.body;
 
       const shop = await Shop.findOne(req.seller._id);
 
@@ -341,7 +381,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // all sellers --- for admin
@@ -361,7 +401,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // delete seller ---admin
@@ -375,8 +415,12 @@ router.delete(
 
       if (!seller) {
         return next(
-          new ErrorHandler("Seller is not available with this id", 400),
+          new ErrorHandler("Seller is not available with this id", 400)
         );
+      }
+
+      if (seller.avatar?.public_id) {
+        await deleteFromCloudinary(seller.avatar.public_id);
       }
 
       await Shop.findByIdAndDelete(req.params.id);
@@ -388,7 +432,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // update seller withdraw methods --- sellers
@@ -410,7 +454,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // delete seller withdraw merthods --- only seller
@@ -436,7 +480,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 module.exports = router;

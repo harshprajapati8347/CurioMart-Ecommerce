@@ -5,6 +5,7 @@ import styles from "../../styles/styles";
 import axios from "axios";
 import { loadSeller } from "../../redux/actions/user";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const ShopSettings = () => {
   const { seller } = useSelector((state) => state.seller);
@@ -85,7 +86,7 @@ const ShopSettings = () => {
               src={
                 avatar
                   ? URL.createObjectURL(avatar)
-                  : `${import.meta.env.VITE_APP_BACKEND_URL}/${seller.avatar}`
+                  : getImageUrl(seller.avatar)
               }
               alt=""
               className="w-[200px] h-[200px] rounded-full cursor-pointer"

@@ -2,9 +2,9 @@ const Messages = require("../model/messages");
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const express = require("express");
-const path = require ("path");
 const { upload } = require("../multer");
 const router = express.Router();
+const { uploadOnCloudinary } = require("../utils/cloudinary");
 
 // create new message
 router.post(
@@ -15,9 +15,20 @@ router.post(
       const messageData = req.body;
 
       if (req.file) {
-        const filename = req.file.filename;
-        const fileUrl = path.join(filename);
-        messageData.images = fileUrl;
+        const uploadResult = await uploadOnCloudinary(req.file.path, {
+          folder: "curiomart-server/messages",
+        });
+
+        if (!uploadResult) {
+          return next(
+            new ErrorHandler("Image upload failed. Please try again.", 500)
+          );
+        }
+
+        messageData.images = {
+          public_id: uploadResult.public_id,
+          url: uploadResult.secure_url,
+        };
       }
 
       messageData.conversationId = req.body.conversationId;
