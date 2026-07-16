@@ -70,9 +70,21 @@ const useStyles = makeStyles((theme) => ({
       outline: "none",
     },
     "& p": { margin: theme.spacing(1, 0) },
-    "& h2": { fontSize: "1.5rem", fontWeight: 600, margin: theme.spacing(2, 0, 1) },
-    "& h3": { fontSize: "1.25rem", fontWeight: 600, margin: theme.spacing(2, 0, 1) },
-    "& h4": { fontSize: "1.1rem", fontWeight: 600, margin: theme.spacing(1.5, 0, 1) },
+    "& h2": {
+      fontSize: "1.5rem",
+      fontWeight: 600,
+      margin: theme.spacing(2, 0, 1),
+    },
+    "& h3": {
+      fontSize: "1.25rem",
+      fontWeight: 600,
+      margin: theme.spacing(2, 0, 1),
+    },
+    "& h4": {
+      fontSize: "1.1rem",
+      fontWeight: 600,
+      margin: theme.spacing(1.5, 0, 1),
+    },
     "& ul": {
       listStyleType: "disc",
       paddingLeft: theme.spacing(3),
@@ -171,7 +183,12 @@ function LinkPopover({ editor }) {
 
   const handleSetLink = () => {
     if (linkUrl) {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: linkUrl }).run();
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: linkUrl })
+        .run();
     } else {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
     }
@@ -185,7 +202,9 @@ function LinkPopover({ editor }) {
       <ToolbarToggle
         active
         label="Remove link"
-        onClick={() => editor.chain().focus().extendMarkRange("link").unsetLink().run()}
+        onClick={() =>
+          editor.chain().focus().extendMarkRange("link").unsetLink().run()
+        }
       >
         <UnlinkIcon size={16} />
       </ToolbarToggle>
@@ -220,7 +239,12 @@ function LinkPopover({ editor }) {
             <Button size="small" onClick={handleClose}>
               Cancel
             </Button>
-            <Button size="small" color="primary" variant="contained" onClick={handleSetLink}>
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={handleSetLink}
+            >
               Save
             </Button>
           </div>
@@ -293,7 +317,9 @@ function FormattingButtons({ editor, state, classes }) {
       <ToolbarToggle
         active={state.isHighlight}
         label="Highlight"
-        onClick={() => editor.chain().focus().toggleHighlight({ color: "#fdeb80" }).run()}
+        onClick={() =>
+          editor.chain().focus().toggleHighlight({ color: "#fdeb80" }).run()
+        }
       >
         <HighlighterIcon size={16} />
       </ToolbarToggle>
@@ -342,14 +368,14 @@ function ToolBar({ editor }) {
   const headingValue = state.isHeading2
     ? "heading2"
     : state.isHeading3
-    ? "heading3"
-    : state.isHeading4
-    ? "heading4"
-    : state.isHeading5
-    ? "heading5"
-    : state.isHeading6
-    ? "heading6"
-    : "paragraph";
+      ? "heading3"
+      : state.isHeading4
+        ? "heading4"
+        : state.isHeading5
+          ? "heading5"
+          : state.isHeading6
+            ? "heading6"
+            : "paragraph";
 
   const handleHeadingChange = (e) => {
     const value = e.target.value;
@@ -430,7 +456,7 @@ function FloatingMenu({ editor }) {
 // -----------------------------------------------------------------------
 // Main exported editor
 // -----------------------------------------------------------------------
-const Tiptap = ({ content, onChange }) => {
+const Tiptap = ({ content, onChange, editable = true }) => {
   const classes = useStyles();
 
   const editor = useEditor({
@@ -457,14 +483,14 @@ const Tiptap = ({ content, onChange }) => {
 
   return (
     <div className={classes.wrapper}>
-      {editor && (
+      {editor && editable && (
         <>
           <ToolBar editor={editor} />
           <BubbleMenu editor={editor} />
           <FloatingMenu editor={editor} />
         </>
       )}
-      <EditorContent editor={editor} className={classes.content}/>
+      <EditorContent editor={editor} className={classes.content} />
     </div>
   );
 };

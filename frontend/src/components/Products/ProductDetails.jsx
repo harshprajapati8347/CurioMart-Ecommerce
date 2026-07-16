@@ -22,6 +22,7 @@ import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
+import Tiptap from "../Tiptap";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -125,7 +126,7 @@ const ProductDetails = ({ data }) => {
     products.reduce(
       (acc, product) =>
         acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
-      0
+      0,
     );
 
   const avg = totalRatings / totalReviewsLength || 0;
@@ -138,13 +139,14 @@ const ProductDetails = ({ data }) => {
       const sellerId = data.shop._id;
       await axios
         .post(
-          `${import.meta.env.VITE_APP_SERVER_URL
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
           }/conversation/create-new-conversation`,
           {
             groupTitle,
             userId,
             sellerId,
-          }
+          },
         )
         .then((res) => {
           navigate(`/inbox?${res.data.conversation._id}`);
@@ -160,8 +162,9 @@ const ProductDetails = ({ data }) => {
   const discountPercentage =
     data?.originalPrice && data?.discountPrice
       ? Math.round(
-        ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
-      )
+          ((data.originalPrice - data.discountPrice) / data.originalPrice) *
+            100,
+        )
       : 0;
 
   return (
@@ -186,7 +189,10 @@ const ProductDetails = ({ data }) => {
                         <span className="text-sm text-gray-700 font-medium">
                           {data.shop.name}
                         </span>
-                        <Link to={`/shop/${data.shop._id}`} className="text-blue-500 hover:text-blue-600">
+                        <Link
+                          to={`/shop/${data.shop._id}`}
+                          className="text-blue-500 hover:text-blue-600"
+                        >
                           Visit the store
                         </Link>
                       </div>
@@ -211,8 +217,9 @@ const ProductDetails = ({ data }) => {
                   className="relative bg-gray-50 rounded-2xl overflow-hidden aspect-square border border-gray-200 select-none"
                 >
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data && data.images[select]
-                      }`}
+                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                      data && data.images[select]
+                    }`}
                     alt={data.name}
                     className="w-full h-full object-contain p-8 select-none"
                     draggable="false"
@@ -232,10 +239,11 @@ const ProductDetails = ({ data }) => {
                         <button
                           key={index}
                           onClick={() => setSelect(index)}
-                          className={`w-2 h-2 rounded-full transition-all duration-300 ${select === index
-                            ? "bg-blue-600 scale-125 w-4"
-                            : "bg-gray-400/80 hover:bg-gray-600"
-                            }`}
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                            select === index
+                              ? "bg-blue-600 scale-125 w-4"
+                              : "bg-gray-400/80 hover:bg-gray-600"
+                          }`}
                           aria-label={`Go to slide ${index + 1}`}
                         />
                       ))}
@@ -249,10 +257,11 @@ const ProductDetails = ({ data }) => {
                         ? removeFromWishlistHandler(data)
                         : addToWishlistHandler(data)
                     }
-                    className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 sm:p-3 rounded-full transition-all shadow-lg ${click
-                      ? "bg-red-50 text-red-600 hover:bg-red-100"
-                      : "bg-white text-gray-600 hover:bg-gray-100"
-                      }`}
+                    className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 sm:p-3 rounded-full transition-all shadow-lg ${
+                      click
+                        ? "bg-red-50 text-red-600 hover:bg-red-100"
+                        : "bg-white text-gray-600 hover:bg-gray-100"
+                    }`}
                   >
                     {click ? (
                       <AiFillHeart className="text-xl sm:text-2xl" />
@@ -269,14 +278,16 @@ const ProductDetails = ({ data }) => {
                       <button
                         key={index}
                         onClick={() => setSelect(index)}
-                        className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${select === index
-                          ? "border-blue-600 shadow-md"
-                          : "border-gray-200 hover:border-gray-300"
-                          }`}
+                        className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${
+                          select === index
+                            ? "border-blue-600 shadow-md"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
                       >
                         <img
-                          src={`${import.meta.env.VITE_APP_BACKEND_URL
-                            }/${image}`}
+                          src={`${
+                            import.meta.env.VITE_APP_BACKEND_URL
+                          }/${image}`}
                           alt={`${data.name} ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
@@ -351,7 +362,9 @@ const ProductDetails = ({ data }) => {
                     </span>
                     {data.originalPrice && (
                       <>
-                        <span className="text-lg sm:text-2xl text-gray-500">M.R.P.:</span>
+                        <span className="text-lg sm:text-2xl text-gray-500">
+                          M.R.P.:
+                        </span>
                         <span className="text-lg sm:text-2xl text-gray-500 line-through">
                           ₹{data.originalPrice}
                         </span>
@@ -447,8 +460,9 @@ const ProductDetails = ({ data }) => {
                     className="flex items-center gap-3 sm:gap-4 group mb-4"
                   >
                     <img
-                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.shop?.avatar
-                        }`}
+                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                        data?.shop?.avatar
+                      }`}
                       alt={data.shop.name}
                       className="w-12 h-12 sm:w-16 h-16 rounded-full border-2 border-white shadow-md object-cover"
                     />
@@ -525,9 +539,8 @@ const ProductDetails = ({ data }) => {
             averageRating={averageRating}
           />
         </div>
-      ) : null
-      }
-    </div >
+      ) : null}
+    </div>
   );
 };
 
@@ -553,18 +566,20 @@ const ProductDetailsInfo = ({
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
-            className={`relative px-4 py-3 sm:px-6 sm:py-4 font-semibold text-sm md:text-base whitespace-nowrap transition-colors flex items-center gap-1.5 sm:gap-2 ${active === tab.id
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-600 hover:text-gray-900"
-              }`}
+            className={`relative px-4 py-3 sm:px-6 sm:py-4 font-semibold text-sm md:text-base whitespace-nowrap transition-colors flex items-center gap-1.5 sm:gap-2 ${
+              active === tab.id
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
           >
             {tab.label}
             {tab.badge !== undefined && (
               <span
-                className={`px-2 py-0.5 rounded-full text-xs font-bold ${active === tab.id
-                  ? "bg-blue-100 text-blue-600"
-                  : "bg-gray-100 text-gray-600"
-                  }`}
+                className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                  active === tab.id
+                    ? "bg-blue-100 text-blue-600"
+                    : "bg-gray-100 text-gray-600"
+                }`}
               >
                 {tab.badge}
               </span>
@@ -578,12 +593,9 @@ const ProductDetailsInfo = ({
         {/* Product Details Tab */}
         {active === 1 && (
           <div className="prose max-w-none">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
-              Description
-            </h3>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-              {data.description}
-            </p>
+            {data.description && (
+              <Tiptap content={data.description} editable={false} />
+            )}
           </div>
         )}
 
@@ -608,8 +620,9 @@ const ProductDetailsInfo = ({
                     >
                       <div className="flex items-start gap-4">
                         <img
-                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.user.avatar
-                            }`}
+                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                            item.user.avatar
+                          }`}
                           alt={item.user.name}
                           className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
                         />
@@ -655,8 +668,9 @@ const ProductDetailsInfo = ({
               <Link to={`/shop/preview/${data.shop._id}`}>
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 group">
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.shop?.avatar
-                      }`}
+                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
+                      data?.shop?.avatar
+                    }`}
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-gray-200 group-hover:border-blue-600 transition-colors object-cover shadow-md"
                     alt={data.shop.name}
                   />
