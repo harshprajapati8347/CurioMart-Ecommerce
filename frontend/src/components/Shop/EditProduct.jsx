@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import { updateProduct } from "../../redux/actions/product";
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
+import Tiptap from "../Tiptap";
 
 const EditProduct = () => {
   const { seller } = useSelector((state) => state.seller);
@@ -81,7 +82,7 @@ const EditProduct = () => {
   };
 
   return (
-    <div className="w-[90%] 800px:w-[50%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
+    <div className="w-[90%] 800px:w-[80%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
       <h5 className="text-[30px] font-Poppins text-center">Edit Product</h5>
       {/* edit product form */}
       <form onSubmit={handleSubmit}>
@@ -121,17 +122,17 @@ const EditProduct = () => {
           <label className="pb-2">
             Description <span className="text-red-500">*</span>
           </label>
-          <textarea
-            cols="30"
-            required
-            rows="8"
-            type="text"
-            name="description"
-            value={description}
-            className="mt-2 appearance-none block w-full pt-2 px-3 border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter your product description..."
-          ></textarea>
+          {description !== "" ? (
+            <Tiptap
+              content={description}
+              onChange={(value) => setDescription(value)}
+            />
+          ) : (
+            <Tiptap
+              content={description}
+              onChange={(value) => setDescription(value)}
+            />
+          )}
         </div>
         <br />
         <div>
