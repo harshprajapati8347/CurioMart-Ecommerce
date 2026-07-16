@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 import { createevent } from "../../redux/actions/event";
+import Tiptap from "../Tiptap";
 
 const CreateEvent = () => {
   const { seller } = useSelector((state) => state.seller);
@@ -130,17 +131,17 @@ const CreateEvent = () => {
           <label className="pb-2">
             Description <span className="text-red-500">*</span>
           </label>
-          <textarea
-            cols="30"
-            required
-            rows="8"
-            type="text"
-            name="description"
-            value={description}
-            className="mt-2 appearance-none block w-full pt-2 px-3 border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter your event product description..."
-          ></textarea>
+          {description !== "" ? (
+            <Tiptap
+              content={description}
+              onChange={(value) => setDescription(value)}
+            />
+          ) : (
+            <Tiptap
+              content={description}
+              onChange={(value) => setDescription(value)}
+            />
+          )}
         </div>
         <br />
         <div>
