@@ -71,6 +71,11 @@ router.post(
         product,
       });
     } catch (error) {
+      if (uploadedImages.length > 0) {
+        await Promise.all(
+          uploadedImages.map((image) => deleteFromCloudinary(image.public_id))
+        );
+      }
       return next(new ErrorHandler(error, 400));
     }
   })
