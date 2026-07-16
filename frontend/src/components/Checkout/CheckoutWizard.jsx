@@ -13,13 +13,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { usePaymentIntent } from "../../hooks/usePaymentIntent";
 import { FiCheck, FiChevronDown, FiChevronUp, FiShield } from "react-icons/fi";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 let stripePromise;
 const getStripe = async () => {
   if (!stripePromise) {
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_SERVER_URL}/payment/stripeapikey`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/payment/stripeapikey`
       );
       stripePromise = loadStripe(data.stripeApikey);
     } catch (error) {
@@ -94,7 +95,7 @@ const OrderSummaryPanel = ({
           {cart.map((item) => (
             <div key={item._id} className="flex items-center gap-4">
               <img
-                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item?.images[0]}`}
+                src={getImageUrl(item?.images && item.images[0])}
                 alt={item.name}
                 className="w-16 h-16 object-cover rounded-md border"
               />
@@ -524,23 +525,23 @@ const CheckoutWizard = () => {
 
   const subtotal = cart.reduce(
     (acc, item) => acc + item.qty * item.discountPrice,
-    0,
+    0
   );
   const shipping = subtotal > 1000 ? 0 : 50;
 
   const applyCoupon = async (code) => {
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/get-coupon-value/${code}`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/coupon/get-coupon-value/${code}`
       );
       if (data.couponCode) {
         const validItems = cart.filter(
-          (item) => item.shopId === data.couponCode.shopId,
+          (item) => item.shopId === data.couponCode.shopId
         );
         if (validItems.length > 0) {
           const eligiblePrice = validItems.reduce(
             (acc, item) => acc + item.qty * item.discountPrice,
-            0,
+            0
           );
           setDiscountAmount((eligiblePrice * data.couponCode.value) / 100);
           setCouponData(data.couponCode);

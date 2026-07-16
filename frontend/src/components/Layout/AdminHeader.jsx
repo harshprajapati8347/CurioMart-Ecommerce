@@ -5,6 +5,7 @@ import { FiPackage, FiShoppingBag } from "react-icons/fi";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const AdminHeader = () => {
   const { user } = useSelector((state) => state.user);
@@ -53,7 +54,7 @@ const AdminHeader = () => {
             />
           </Link>
           <img
-            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
+            src={getImageUrl(user?.avatar)}
             alt=""
             className="w-[50px] h-[50px] rounded-full object-cover"
           />

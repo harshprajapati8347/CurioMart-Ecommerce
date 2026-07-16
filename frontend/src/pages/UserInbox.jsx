@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import { TfiGallery } from "react-icons/tfi";
 import styles from "../styles/styles";
-// const ENDPOINT = "https://curiomart-socket-harsh.onrender.com";
+import { getImageUrl } from "../utils/getImageUrl";
 const ENDPOINT = `${import.meta.env.VITE_APP_SOCKET_URL}`;
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
@@ -315,7 +315,7 @@ const MessageList = ({
     >
       <div className="relative">
         <img
-          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${user?.avatar}`}
+          src={getImageUrl(user?.avatar)}
           alt=""
           className="w-[50px] h-[50px] rounded-full"
         />
@@ -356,7 +356,7 @@ const SellerInbox = ({
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${userData?.avatar}`}
+            src={getImageUrl(userData?.avatar)}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
@@ -384,16 +384,14 @@ const SellerInbox = ({
             >
               {item.sender !== sellerId && (
                 <img
-                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                    userData?.avatar
-                  }`}
+                  src={getImageUrl(userData?.avatar)}
                   className="w-[40px] h-[40px] rounded-full mr-3"
                   alt=""
                 />
               )}
               {item.images && (
                 <img
-                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images}`}
+                  src={getImageUrl(item.images)}
                   className="w-[300px] h-[300px] object-cover rounded-[10px] ml-2 mb-2"
                 />
               )}

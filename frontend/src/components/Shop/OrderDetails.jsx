@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -96,7 +97,7 @@ const OrderDetails = () => {
         data?.cart.map((item, index) => (
           <div className="w-full flex items-start mb-5">
             <img
-              src={`${import.meta.env.VITE_APP_BACKEND_URL}/${item.images[0]}`}
+              src={getImageUrl(item.images && item.images[0])}
               alt=""
               className="w-[80x] h-[80px]"
             />

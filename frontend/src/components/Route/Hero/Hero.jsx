@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 const sliderContent = [
   {
     image:
-      "https://res.cloudinary.com/cloudwithharsh/image/upload/f_auto,q_auto/CurioMart/banner-3_nkyyxy.jpg",
+      "https://res.cloudinary.com/cloudwithharsh/image/upload/v1746176510/curiomart-server/frontend/banner-3_nkyyxy.jpg",
     title: "Elegant Home Decor Finds",
     description:
       "Transform your living space with our handpicked selection of modern and traditional home decor essentials.",
@@ -15,7 +15,7 @@ const sliderContent = [
   },
   {
     image:
-      "https://res.cloudinary.com/cloudwithharsh/image/upload/f_auto,q_auto/CurioMart/iphone-banner1_slfzrx.jpg",
+      "https://res.cloudinary.com/cloudwithharsh/image/upload/v1746176599/curiomart-server/frontend/iphone-banner1_slfzrx.jpg",
     title: "Mega Electronics Blowout",
     description:
       "Upgrade your tech game with massive savings on smartphones, laptops, and accessories. Hurry before it's gone!",
@@ -24,7 +24,7 @@ const sliderContent = [
   },
   {
     image:
-      "https://res.cloudinary.com/cloudwithharsh/image/upload/f_auto,q_auto/CurioMart/home-banner.jpg",
+      "https://res.cloudinary.com/cloudwithharsh/image/upload/v1746177068/curiomart-server/frontend/home-banner.jpg",
     title: "Festive Shopping Extravaganza",
     description:
       "Celebrate in style with exclusive festive deals on fashion, lifestyle, and home essentials. Shop your favorites now!",

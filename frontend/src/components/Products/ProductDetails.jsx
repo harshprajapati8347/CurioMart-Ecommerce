@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
 import Tiptap from "../Tiptap";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -126,7 +127,7 @@ const ProductDetails = ({ data }) => {
     products.reduce(
       (acc, product) =>
         acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
-      0,
+      0
     );
 
   const avg = totalRatings / totalReviewsLength || 0;
@@ -146,7 +147,7 @@ const ProductDetails = ({ data }) => {
             groupTitle,
             userId,
             sellerId,
-          },
+          }
         )
         .then((res) => {
           navigate(`/inbox?${res.data.conversation._id}`);
@@ -162,8 +163,7 @@ const ProductDetails = ({ data }) => {
   const discountPercentage =
     data?.originalPrice && data?.discountPrice
       ? Math.round(
-          ((data.originalPrice - data.discountPrice) / data.originalPrice) *
-            100,
+          ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
         )
       : 0;
 
@@ -181,7 +181,7 @@ const ProductDetails = ({ data }) => {
                     {/* Shop Logo */}
                     <div className="flex items-start gap-2">
                       <img
-                        src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data.shop.avatar}`}
+                        src={getImageUrl(data.shop.avatar)}
                         alt={data.shop.name}
                         className="w-8 h-8 rounded-full mr-2 inline"
                       />
@@ -217,9 +217,7 @@ const ProductDetails = ({ data }) => {
                   className="relative bg-gray-50 rounded-2xl overflow-hidden aspect-square border border-gray-200 select-none"
                 >
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      data && data.images[select]
-                    }`}
+                    src={getImageUrl(data && data.images[select])}
                     alt={data.name}
                     className="w-full h-full object-contain p-8 select-none"
                     draggable="false"
@@ -285,9 +283,7 @@ const ProductDetails = ({ data }) => {
                         }`}
                       >
                         <img
-                          src={`${
-                            import.meta.env.VITE_APP_BACKEND_URL
-                          }/${image}`}
+                          src={getImageUrl(image)}
                           alt={`${data.name} ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
@@ -460,9 +456,7 @@ const ProductDetails = ({ data }) => {
                     className="flex items-center gap-3 sm:gap-4 group mb-4"
                   >
                     <img
-                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                        data?.shop?.avatar
-                      }`}
+                      src={getImageUrl(data?.shop?.avatar)}
                       alt={data.shop.name}
                       className="w-12 h-12 sm:w-16 h-16 rounded-full border-2 border-white shadow-md object-cover"
                     />
@@ -620,9 +614,7 @@ const ProductDetailsInfo = ({
                     >
                       <div className="flex items-start gap-4">
                         <img
-                          src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                            item.user.avatar
-                          }`}
+                          src={getImageUrl(item.user.avatar)}
                           alt={item.user.name}
                           className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
                         />
@@ -668,9 +660,7 @@ const ProductDetailsInfo = ({
               <Link to={`/shop/preview/${data.shop._id}`}>
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 group">
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      data?.shop?.avatar
-                    }`}
+                    src={getImageUrl(data?.shop?.avatar)}
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-gray-200 group-hover:border-blue-600 transition-colors object-cover shadow-md"
                     alt={data.shop.name}
                   />

@@ -40,8 +40,8 @@ const SellerActivationPage = () => {
   useEffect(() => {
     if (response) {
       setTimeout(() => {
-        toast.success("Your account has been created suceessfully!");
-        window.location.href = "/login";
+        toast.success("Your shop account has been created suceessfully!");
+        window.location.href = "/shop-login";
       }, 3000);
     }
   }, [response]);

@@ -1,15 +1,18 @@
 const express = require("express");
-const path = require("path");
 const User = require("../model/user");
 const router = express.Router();
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
+const {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+  safeUnlink,
+} = require("../utils/cloudinary");
 
 router.post("/create-user", upload.single("file"), async (req, res, next) => {
   try {
@@ -17,25 +20,35 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
-      const filename = req.file.filename;
-      const filePath = `uploads/${filename}`;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ message: "Error deleting file" });
-        }
-      });
+      // avatar hasn't been uploaded to Cloudinary yet, just drop the local temp file
+      if (req.file) safeUnlink(req.file.path);
       return next(new ErrorHandler("User already exists", 400));
     }
 
-    const filename = req.file.filename;
-    const fileUrl = path.join(filename);
+    if (!req.file) {
+      return next(new ErrorHandler("Please upload your avatar!", 400));
+    }
+
+    const uploadResult = await uploadOnCloudinary(req.file.path, {
+      folder: "curiomart-server/users",
+    });
+
+    if (!uploadResult) {
+      return next(
+        new ErrorHandler("Avatar upload failed. Please try again.", 500)
+      );
+    }
+
+    const avatar = {
+      public_id: uploadResult.public_id,
+      url: uploadResult.secure_url,
+    };
 
     const user = {
       name: name,
       email: email,
       password: password,
-      avatar: fileUrl,
+      avatar,
     };
 
     const activationToken = createActivationToken(user);
@@ -53,6 +66,8 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
         message: `please check your email:- ${user.email} to activate your account!`,
       });
     } catch (error) {
+      // activation email failed to send — don't leave an orphaned avatar on Cloudinary
+      await deleteFromCloudinary(avatar.public_id);
       return next(new ErrorHandler(error.message, 500));
     }
   } catch (error) {
@@ -76,7 +91,7 @@ router.post(
 
       const newUser = jwt.verify(
         activation_token,
-        process.env.ACTIVATION_SECRET,
+        process.env.ACTIVATION_SECRET
       );
 
       if (!newUser) {
@@ -100,7 +115,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // login user
@@ -124,7 +139,7 @@ router.post(
 
       if (!isPasswordValid) {
         return next(
-          new ErrorHandler("Please provide the correct information", 400),
+          new ErrorHandler("Please provide the correct information", 400)
         );
       }
 
@@ -132,7 +147,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // load user
@@ -154,7 +169,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // log out user
@@ -175,7 +190,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // forgot password
@@ -195,7 +210,7 @@ router.post(
       const resetToken = jwt.sign(
         { id: user._id },
         process.env.ACTIVATION_SECRET,
-        { expiresIn: "15m" },
+        { expiresIn: "15m" }
       );
 
       const resetUrl = `${process.env.FRONTEND_URL}/reset-password?reset_token=${resetToken}`;
@@ -217,7 +232,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // reset password
@@ -229,7 +244,7 @@ router.post(
 
       if (!reset_token || !password) {
         return next(
-          new ErrorHandler("Please provide reset token and new password", 400),
+          new ErrorHandler("Please provide reset token and new password", 400)
         );
       }
 
@@ -255,7 +270,7 @@ router.post(
     } catch (error) {
       return next(new ErrorHandler("Invalid or expired reset token", 400));
     }
-  }),
+  })
 );
 
 // update user info
@@ -276,7 +291,7 @@ router.put(
 
       if (!isPasswordValid) {
         return next(
-          new ErrorHandler("Please provide the correct information", 400),
+          new ErrorHandler("Please provide the correct information", 400)
         );
       }
 
@@ -293,7 +308,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // update user avatar
@@ -305,14 +320,32 @@ router.put(
     try {
       const existsUser = await User.findById(req.user.id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
+      if (!req.file) {
+        return next(new ErrorHandler("Please upload an avatar image!", 400));
+      }
 
-      fs.unlinkSync(existAvatarPath);
+      const uploadResult = await uploadOnCloudinary(req.file.path, {
+        folder: "curiomart-server/users",
+      });
 
-      const fileUrl = path.join(req.file.filename);
+      if (!uploadResult) {
+        return next(
+          new ErrorHandler("Avatar upload failed. Please try again.", 500)
+        );
+      }
+
+      // only delete the old avatar once the new one is safely uploaded
+      if (existsUser.avatar?.public_id) {
+        await deleteFromCloudinary(existsUser.avatar.public_id);
+      }
+
+      const avatar = {
+        public_id: uploadResult.public_id,
+        url: uploadResult.secure_url,
+      };
 
       const user = await User.findByIdAndUpdate(req.user.id, {
-        avatar: fileUrl,
+        avatar,
       });
 
       res.status(200).json({
@@ -322,7 +355,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // update user addresses
@@ -334,16 +367,16 @@ router.put(
       const user = await User.findById(req.user.id);
 
       const sameTypeAddress = user.addresses.find(
-        (address) => address.addressType === req.body.addressType,
+        (address) => address.addressType === req.body.addressType
       );
       if (sameTypeAddress) {
         return next(
-          new ErrorHandler(`${req.body.addressType} address already exists`),
+          new ErrorHandler(`${req.body.addressType} address already exists`)
         );
       }
 
       const existsAddress = user.addresses.find(
-        (address) => address._id === req.body._id,
+        (address) => address._id === req.body._id
       );
 
       if (existsAddress) {
@@ -362,7 +395,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // delete user address
@@ -380,7 +413,7 @@ router.delete(
         {
           _id: userId,
         },
-        { $pull: { addresses: { _id: addressId } } },
+        { $pull: { addresses: { _id: addressId } } }
       );
 
       const user = await User.findById(userId);
@@ -389,7 +422,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // update user password
@@ -401,7 +434,7 @@ router.put(
       const user = await User.findById(req.user.id).select("+password");
 
       const isPasswordMatched = await user.comparePassword(
-        req.body.oldPassword,
+        req.body.oldPassword
       );
 
       if (!isPasswordMatched) {
@@ -410,7 +443,7 @@ router.put(
 
       if (req.body.newPassword !== req.body.confirmPassword) {
         return next(
-          new ErrorHandler("Password doesn't matched with each other!", 400),
+          new ErrorHandler("Password doesn't matched with each other!", 400)
         );
       }
       user.password = req.body.newPassword;
@@ -424,7 +457,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // find user infoormation with the userId
@@ -441,7 +474,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // all users --- for admin
@@ -461,7 +494,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // delete users --- admin
@@ -475,8 +508,12 @@ router.delete(
 
       if (!user) {
         return next(
-          new ErrorHandler("User is not available with this id", 400),
+          new ErrorHandler("User is not available with this id", 400)
         );
+      }
+
+      if (user.avatar?.public_id) {
+        await deleteFromCloudinary(user.avatar.public_id);
       }
 
       await User.findByIdAndDelete(req.params.id);
@@ -488,7 +525,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 module.exports = router;

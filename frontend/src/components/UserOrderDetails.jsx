@@ -8,6 +8,7 @@ import { RxCross1 } from "react-icons/rx";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -91,9 +92,7 @@ const UserOrderDetails = () => {
           return (
             <div className="w-full flex items-start mb-5">
               <img
-                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                  item.images[0]
-                }`}
+                src={getImageUrl(item.images && item.images[0])}
                 alt=""
                 className="w-[80x] h-[80px]"
               />
@@ -132,9 +131,9 @@ const UserOrderDetails = () => {
             <br />
             <div className="w-full flex">
               <img
-                src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                  selectedItem?.images[0]
-                }`}
+                src={getImageUrl(
+                  selectedItem?.images && selectedItem.images[0]
+                )}
                 alt=""
                 className="w-[80px] h-[80px]"
               />
@@ -226,6 +225,7 @@ const UserOrderDetails = () => {
           <h4 className="pt-3 text-[20px]">Payment Info:</h4>
           <h4>
             Status:{" "}
+            {console.log(data?.status)}
             {data?.paymentInfo?.status ? data?.paymentInfo?.status : "Not Paid"}
           </h4>
           <br />

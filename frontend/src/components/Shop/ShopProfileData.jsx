@@ -6,6 +6,7 @@ import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
 import Ratings from "../Products/Ratings";
 import { getAllEventsShop } from "../../redux/actions/event";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const ShopProfileData = ({ isOwner }) => {
   const { products } = useSelector((state) => state.products);
@@ -106,9 +107,7 @@ const ShopProfileData = ({ isOwner }) => {
             allReviews.map((item, index) => (
               <div className="w-full flex my-4">
                 <img
-                  src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                    item.user.avatar
-                  }`}
+                  src={getImageUrl(item.user.avatar)}
                   className="w-[50px] h-[50px] rounded-full"
                   alt=""
                 />

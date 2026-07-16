@@ -7,6 +7,7 @@ import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import { RxCross1 } from "react-icons/rx";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const CartPageContent = () => {
   const { cart } = useSelector((state) => state.cart);
@@ -22,7 +23,7 @@ const CartPageContent = () => {
 
   const subtotal = cart.reduce(
     (acc, item) => acc + item.qty * item.discountPrice,
-    0,
+    0
   );
 
   const shipping = subtotal > 1000 ? 0 : 50;
@@ -222,7 +223,7 @@ const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden bg-gray-100"
         >
           <img
-            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.images[0]}`}
+            src={getImageUrl(data?.images && data.images[0])}
             alt={data.name}
             className="w-full h-full object-cover hover:scale-105 transition-transform"
           />

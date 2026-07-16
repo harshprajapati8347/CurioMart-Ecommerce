@@ -21,6 +21,7 @@ import {
   removeFromWishlist,
 } from "../../../redux/actions/wishlist";
 import Ratings from "../../Products/Ratings";
+import { getImageUrl } from "../../../utils/getImageUrl";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -85,8 +86,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const discountPercentage =
     data.originalPrice && data.discountPrice
       ? Math.round(
-          ((data.originalPrice - data.discountPrice) / data.originalPrice) *
-            100,
+          ((data.originalPrice - data.discountPrice) / data.originalPrice) * 100
         )
       : 0;
 
@@ -111,9 +111,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 {/* Main Image */}
                 <div className="relative bg-gray-50 rounded-2xl overflow-hidden aspect-square">
                   <img
-                    src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                      data.images && data.images[selectedImage]
-                    }`}
+                    src={getImageUrl(data.images && data.images[selectedImage])}
                     alt={data.name}
                     className="w-full h-full object-contain p-6"
                   />
@@ -140,9 +138,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                         }`}
                       >
                         <img
-                          src={`${
-                            import.meta.env.VITE_APP_BACKEND_URL
-                          }/${image}`}
+                          src={getImageUrl(image)}
                           alt={`${data.name} ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
@@ -158,9 +154,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     className="flex items-center gap-4 group"
                   >
                     <img
-                      src={`${import.meta.env.VITE_APP_BACKEND_URL}/${
-                        data?.shop?.avatar
-                      }`}
+                      src={getImageUrl(data?.shop?.avatar)}
                       alt={data.shop.name}
                       className="w-16 h-16 rounded-full border-2 border-white shadow-md object-cover"
                     />
@@ -362,7 +356,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
         </div>
       ) : null}
     </div>,
-    document.body,
+    document.body
   );
 };
 

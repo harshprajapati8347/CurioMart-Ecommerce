@@ -4,6 +4,7 @@ import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import { MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   const [value, setValue] = React.useState(data.qty);
@@ -48,7 +49,7 @@ const CartItem = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gray-100 ring-1 ring-gray-200 hover:ring-blue-400 transition-all"
         >
           <img
-            src={`${import.meta.env.VITE_APP_BACKEND_URL}/${data?.images[0]}`}
+            src={getImageUrl(data?.images && data.images[0])}
             alt={data.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
