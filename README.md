@@ -1,6 +1,9 @@
 # **CurioMart - E-Commerce Platform**
 
-[![Live Website](https://img.shields.io/badge/View%20Live%20Website-000?style=for-the-badge&logo=react)](https://curiomart.vercel.app/)
+<!--
+(curiomart.iamharsh.in) -->
+
+Live = https://curiomart.iamharsh.in
 
 **CurioMart** is a comprehensive **MERN Stack** application designed to empower entrepreneurs by simplifying e-commerce site deployment. With features tailored for functionality, scalability, and customization, this platform includes a seller/vendor CMS, a responsive admin dashboard, real-time chat support, and secure payment integration via Stripe.
 
