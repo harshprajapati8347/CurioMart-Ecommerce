@@ -8,36 +8,72 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
+const {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} = require("../utils/cloudinary");
 
 // create product
 router.post(
   "/create-product",
   upload.array("images"),
   catchAsyncErrors(async (req, res, next) => {
+    const files = req.files;
+    let uploadedImages = []; // track what's on Cloudinary so we can roll back on failure
     try {
       const shopId = req.body.shopId;
       const shop = await Shop.findById(shopId);
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
-      } else {
-        const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
-
-        const productData = req.body;
-        productData.images = imageUrls;
-        productData.shop = shop;
-
-        const product = await Product.create(productData);
-
-        res.status(201).json({
-          success: true,
-          product,
-        });
       }
+
+      if (!files || files.length === 0) {
+        return next(
+          new ErrorHandler("Please upload at least one product image!", 400)
+        );
+      }
+
+      // Upload all images to Cloudinary in parallel
+      const uploadResults = await Promise.all(
+        files.map((file) => uploadOnCloudinary(file.path))
+      );
+
+      // If any upload permanently failed (null after retries), abort and roll back
+      const failedCount = uploadResults.filter((r) => r === null).length;
+      if (failedCount > 0) {
+        // roll back any that DID succeed
+        await Promise.all(
+          uploadResults
+            .filter((r) => r !== null)
+            .map((r) => deleteFromCloudinary(r.public_id))
+        );
+        return next(
+          new ErrorHandler(
+            `${failedCount} image(s) failed to upload. Please try again.`,
+            500
+          )
+        );
+      }
+
+      uploadedImages = uploadResults.map((result) => ({
+        public_id: result.public_id,
+        url: result.secure_url,
+      }));
+
+      const productData = req.body;
+      productData.images = uploadedImages;
+      productData.shop = shop;
+
+      const product = await Product.create(productData);
+
+      res.status(201).json({
+        success: true,
+        product,
+      });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  }),
+  })
 );
 
 // get all products of a shop
@@ -54,7 +90,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  }),
+  })
 );
 
 // delete product of a shop
@@ -91,7 +127,7 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  }),
+  })
 );
 
 // update product of a shop
@@ -127,7 +163,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  }),
+  })
 );
 
 // get all products
@@ -144,7 +180,7 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  }),
+  })
 );
 
 // review for a product
@@ -165,7 +201,7 @@ router.put(
       };
 
       const isReviewed = product.reviews.find(
-        (rev) => rev.user._id === req.user._id,
+        (rev) => rev.user._id === req.user._id
       );
 
       if (isReviewed) {
@@ -191,7 +227,7 @@ router.put(
       await Order.findByIdAndUpdate(
         orderId,
         { $set: { "cart.$[elem].isReviewed": true } },
-        { arrayFilters: [{ "elem._id": productId }], new: true },
+        { arrayFilters: [{ "elem._id": productId }], new: true }
       );
 
       res.status(200).json({
@@ -201,7 +237,7 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
-  }),
+  })
 );
 
 // all products --- for admin
@@ -221,6 +257,6 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 module.exports = router;
